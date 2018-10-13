@@ -25,8 +25,8 @@ script:
   - export VERSION=$(git rev-parse --short HEAD) # linuxdeployqt uses this for naming the file
   - mkdir -p appdir/usr/plugins/imageformats/
   - cp /opt/qt*/plugins/imageformats/libqsvg.so appdir/usr/plugins/imageformats/
-  - ./linuxdeployqt-continuous-x86_64.AppImage appdir/usr/share/applications/*.desktop -qmldir=./src/qml/ -bundle-non-qt-libs -appimage
-  - #./linuxdeployqt-continuous-x86_64.AppImage appdir/usr/share/applications/*.desktop -qmldir=./src/qml/ -appimage
+  - ./linuxdeployqt-continuous-x86_64.AppImage appdir/usr/share/applications/*.desktop -qmldir=./src/qml/ -bundle-non-qt-libs
+  - ./linuxdeployqt-continuous-x86_64.AppImage appdir/usr/share/applications/*.desktop -qmldir=./src/qml/ -appimage
 
 after_success:
   - find appdir -executable -type f -exec ldd {} \; | grep " => /usr" | cut -d " " -f 2-3 | sort | uniq
