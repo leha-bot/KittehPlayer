@@ -10,7 +10,7 @@ before_install:
 
 install:
   - sudo apt update
-  - sudo apt-get -y install qt511-meta libmpv
+  - sudo apt-get -y install libmpv qt511-meta-full
   - source /opt/qt*/bin/qt*-env.sh
 
 script:
