@@ -10,7 +10,7 @@ before_install:
 
 install:
   - sudo apt update
-  - sudo apt-get -y install libmpv-dev qt511-meta-full
+  - sudo apt-get -y install libmpv-dev qt511-meta-minimal qt511quickcontrols qt511quickcontrols2
   - source /opt/qt*/bin/qt*-env.sh
 
 script:
