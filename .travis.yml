@@ -1,20 +1,18 @@
 language: cpp
 compiler: gcc
 sudo: require
-dist: xenial
+dist: bionic
 cache:
   paths:
-  - apt-cache/
+  - $TRAVIS_BUILD_DIR/apt-cache/
 
 before_install:
-  - sudo add-apt-repository ppa:beineri/opt-qt-5.11.1-xenial -y
-  - sudo add-apt-repository ppa:mc3man/xerus-media -y
+  - sudo add-apt-repository ppa:beineri/opt-qt-5.11.1-bionic -y
   - sudo apt-get update 
 
 install:
-  - sudo apt-get -o dir::cache::archives="apt-cache" -y install libmpv-dev qt511-meta-minimal qt511quickcontrols qt511quickcontrols2  qt511imageformats qt511svg libavcodec-dev libavcodec-extra libgl1-mesa-dev 
+  - sudo apt-get -o dir::cache::archives="$TRAVIS_BUILD_DIR/apt-cache" -y install libmpv-dev qt511-meta-minimal qt511quickcontrols qt511quickcontrols2  qt511imageformats qt511svg libavcodec-dev libavcodec-extra libgl1-mesa-dev 
   - source /opt/qt*/bin/qt*-env.sh
-  - sudo apt-get -o dir::cache::archives="apt-cache" -y dist-upgrade
 
 script:
   - qmake CONFIG+=release PREFIX=/usr
@@ -24,6 +22,8 @@ script:
   - chmod a+x linuxdeployqt-continuous-x86_64.AppImage
   - unset QTDIR; unset QT_PLUGIN_PATH ; unset LD_LIBRARY_PATH
   - export VERSION=$(git rev-parse --short HEAD) # linuxdeployqt uses this for naming the file
+  - mkdir -p appdir/usr/plugins/imageformats/
+  - cp /opt/qt*/plugins/imageformats/libqsvg.so appdir/usr/plugins/imageformats/
   - ./linuxdeployqt-continuous-x86_64.AppImage appdir/usr/share/applications/*.desktop -qmldir=./src/qml/ -bundle-non-qt-libs -appimage
   - #./linuxdeployqt-continuous-x86_64.AppImage appdir/usr/share/applications/*.desktop -qmldir=./src/qml/ -appimage
 
