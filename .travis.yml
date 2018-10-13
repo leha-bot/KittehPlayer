@@ -12,7 +12,7 @@ before_install:
   - sudo apt-get update 
 
 install:
-  - sudo apt-get -o dir::cache::archives="apt-cache" -y install libmpv-dev qt511-meta-minimal qt511quickcontrols qt511quickcontrols2  qt511imageformats libavcodec-dev libavcodec-extra libgl1-mesa-dev 
+  - sudo apt-get -o dir::cache::archives="apt-cache" -y install libmpv-dev qt511-meta-minimal qt511quickcontrols qt511quickcontrols2  qt511imageformats qt511svg libavcodec-dev libavcodec-extra libgl1-mesa-dev 
   - source /opt/qt*/bin/qt*-env.sh
   - sudo apt-get -o dir::cache::archives="apt-cache" -y dist-upgrade
 
