@@ -9,7 +9,7 @@ cd mpv-build
 git clone --depth 1 https://aomedia.googlesource.com/aom aom || true
 mkdir aom-build || true
 cd aom-build
-cmake ../aom -G "Unix Makefiles" -DBUILD_SHARED_LIBS=1
+cmake ../aom -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX="/usr" -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=1 -DENABLE_TESTS=0
 make -j`nproc`
 sudo make install
 cd ..
