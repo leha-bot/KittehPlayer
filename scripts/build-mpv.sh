@@ -1,18 +1,20 @@
 #!/bin/bash
-set -e
+set -ex
+
+
 
 CFLAGS="-fPIC -Os"
 
-git clone --depth 1 https://github.com/mpv-player/mpv-build mpv-build || true
+rm -rf mpv-build && git clone --depth 1 https://github.com/mpv-player/mpv-build mpv-build
 cd mpv-build
 
-git clone --depth 1 https://github.com/FFmpeg/FFmpeg.git ffmpeg || true
-git clone --depth 1 https://github.com/mpv-player/mpv.git mpv || true
-git clone --depth 1 https://github.com/libass/libass.git libass || true
+rm -rf ffmpeg && git clone --depth 1 https://github.com/FFmpeg/FFmpeg.git ffmpeg
+rm -rf mpv && git clone --depth 1 https://github.com/mpv-player/mpv.git mpv 
+rm -rf libass && git clone --depth 1 https://github.com/libass/libass.git libass
 
 echo "--enable-libmpv-shared --prefix=/usr" > mpv_options
 echo "--disable-caca --disable-wayland --disable-gl-wayland --disable-libarchive  --disable-zlib  --disable-tv --disable-debug-build --disable-manpage-build --disable-vapoursynth --disable-libsmbclient" >> mpv_options
 
-./build -j`nproc`
+./rebuild -j`nproc`
 sudo ./install
 cd ..

@@ -1,5 +1,7 @@
 #!/bin/bash
 
+set -ex
+
 export PATH="/usr/lib/ccache:/usr/lib/ccache/bin:$PATH"
 
 bash scripts/build-mpv.sh
