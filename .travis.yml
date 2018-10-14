@@ -12,13 +12,13 @@ before_install:
   - sudo apt-get update 
 
 install:
-  - sudo apt-get -y install libmpv1 libmpv-dev qt511-meta-minimal qt511quickcontrols qt511quickcontrols2 qt511imageformats qt511svg libgl1-mesa-dev 
-  - #sudo apt-get build-dep libmpv1 libmpv-dev
+  - sudo apt-get -y install ccache libmpv1 libmpv-dev qt511-meta-minimal qt511quickcontrols qt511quickcontrols2 qt511imageformats qt511svg libgl1-mesa-dev 
+  - sudo apt-get build-dep libmpv1 libmpv-dev
   - source /opt/qt*/bin/qt*-env.sh
 
 script:
-  - #export PATH="/usr/lib/ccache:$PATH"
-  - #bash scripts/build-mpv.sh
+  - export PATH="/usr/lib/ccache:$PATH"
+  - bash scripts/build-mpv.sh
   - qmake CONFIG+=release PREFIX=/usr
   - make -j$(nproc)
   - make INSTALL_ROOT=appdir -j$(nproc) install ; find appdir/
