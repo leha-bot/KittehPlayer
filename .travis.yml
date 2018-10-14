@@ -15,7 +15,7 @@ before_install:
   - sudo apt-get update 
 
 install:
-  - sudo apt-get -y install qt510-meta-minimal qt510quickcontrols2 qt510imageformats qt511svg libgl1-mesa-dev 
+  - sudo apt-get -y install qt510-meta-minimal qt510quickcontrols2 qt510imageformats qt510svg libgl1-mesa-dev 
   - sudo apt-get build-dep mpv
   - source /opt/qt*/bin/qt*-env.sh
 
