@@ -18,8 +18,8 @@ install:
   - source /opt/qt*/bin/qt*-env.sh
 
 script:
-  - export PATH="/usr/lib/ccache:$PATH"
-  - bash scripts/build-mpv.sh
+  - #export PATH="/usr/lib/ccache:$PATH"
+  - #bash scripts/build-mpv.sh
   - qmake CONFIG+=release PREFIX=/usr
   - make -j$(nproc)
   - make INSTALL_ROOT=appdir -j$(nproc) install ; find appdir/

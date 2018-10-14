@@ -487,6 +487,7 @@ ApplicationWindow {
                 icon.source: "icons/prev.svg"
                 icon.color: "white"
                 display: AbstractButton.IconOnly
+                anchors.top: parent.top; anchors.bottom: parent.bottom;
                 visible: false
                 width: 0
                 onClicked: {
@@ -504,6 +505,7 @@ ApplicationWindow {
                 icon.source: "icons/pause.svg"
                 icon.color: "white"
                 display: AbstractButton.IconOnly
+                anchors.top: parent.top; anchors.bottom: parent.bottom;
                 anchors.left: playlistPrevButton.right
                 onClicked: {
                     updatePlayPause()
@@ -519,6 +521,7 @@ ApplicationWindow {
                 icon.source: "icons/next.svg"
                 icon.color: "white"
                 display: AbstractButton.IconOnly
+                anchors.top: parent.top; anchors.bottom: parent.bottom;
                 anchors.left: playPauseButton.right
                 onClicked: {
                     renderer.command(["playlist-next", "force"])
@@ -534,6 +537,7 @@ ApplicationWindow {
                 icon.source: "icons/volume-up.svg"
                 icon.color: "white"
                 display: AbstractButton.IconOnly
+                anchors.top: parent.top; anchors.bottom: parent.bottom;
                 anchors.left: playlistNextButton.right
                 onClicked: {
                     renderer.command(["cycle", "mute"])
@@ -599,8 +603,7 @@ ApplicationWindow {
                 text: "0:00 / 0:00"
                 color: "white"
                 anchors.left: volumeBar.right
-                anchors.bottom: parent.bottom
-                anchors.top: parent.top
+                anchors.top: parent.top; anchors.bottom: parent.bottom;
                 padding: 5
                 font.family: notoFont.name
                 font.pixelSize: 12
@@ -613,8 +616,8 @@ ApplicationWindow {
                 icon.name: "subtitles"
                 icon.source: "icons/subtitles.svg"
                 icon.color: "white"
-                Layout.alignment: Qt.AlignVCenter | Qt.AlignRight
                 anchors.right: settingsButton.left
+                anchors.top: parent.top; anchors.bottom: parent.bottom;
                 display: AbstractButton.IconOnly
                 onClicked: {
                     tracksMenuUpdate()
@@ -633,6 +636,7 @@ ApplicationWindow {
                 icon.color: "white"
                 Layout.alignment: Qt.AlignVCenter | Qt.AlignRight
                 anchors.right: fullscreenButton.left
+                anchors.top: parent.top; anchors.bottom: parent.bottom;
                 display: AbstractButton.IconOnly
                 onClicked: {
                     loadDialog.open()
@@ -649,6 +653,7 @@ ApplicationWindow {
                 icon.color: "white"
                 Layout.alignment: Qt.AlignVCenter | Qt.AlignRight
                 anchors.right: parent.right
+                anchors.top: parent.top; anchors.bottom: parent.bottom;
                 display: AbstractButton.IconOnly
                 onClicked: {
                     toggleFullscreen()
