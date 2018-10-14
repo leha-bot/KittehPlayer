@@ -2,7 +2,11 @@ language: cpp
 compiler: gcc
 sudo: require
 dist: trusty
-cache: ccache
+cache:
+  ccache: true
+  directories:
+  - mpv-build
+  - $HOME/.ccache
 
 before_install:
   - sudo add-apt-repository ppa:beineri/opt-qt-5.10.1-trusty -y
