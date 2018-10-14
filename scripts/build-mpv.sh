@@ -1,8 +1,6 @@
 #!/bin/bash
 set -ex
 
-
-
 CFLAGS="-fPIC -Os"
 
 git clone --depth 1 https://github.com/mpv-player/mpv-build mpv-build || true
@@ -11,7 +9,7 @@ cd mpv-build
 git clone --depth 1 https://aomedia.googlesource.com/aom aom || true
 mkdir aom-build || true
 cd aom-build
-cmake ../aom -G "Unix Makefiles"
+cmake ../aom -G "Unix Makefiles" -DBUILD_SHARED_LIBS=1
 make -j`nproc`
 sudo make install
 cd ..
