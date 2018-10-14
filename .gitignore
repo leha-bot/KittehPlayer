@@ -1,2 +1,10 @@
 build
-
+mpv-build
+*.o
+KittehPlayer
+moc_*
+*AppImage*
+.qmake.stash
+qrc_qml.cpp
+appdir
+AppDir

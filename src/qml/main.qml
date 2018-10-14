@@ -202,7 +202,7 @@ ApplicationWindow {
             controlsBackground.visible = true
             titleBar.visible = true
             titleBackground.visible = true
-            controlsBar.height = renderer.height / 16
+            controlsBar.height = renderer.height / 24
         }
 
         Dialog {
@@ -278,7 +278,7 @@ ApplicationWindow {
 
         Rectangle {
             id: titleBar
-            height: renderer.height / 16
+            height: renderer.height / 24
             anchors.right: parent.right
             anchors.rightMargin: parent.width / 128
             anchors.left: parent.left
@@ -324,7 +324,7 @@ ApplicationWindow {
 
         Rectangle {
             id: controlsBar
-            height: renderer.height / 16
+            height: renderer.height / 24
             anchors.right: parent.right
             anchors.rightMargin: parent.width / 128
             anchors.left: parent.left
