@@ -193,7 +193,6 @@ ApplicationWindow {
             controlsBackground.visible = false
             titleBar.visible = false
             titleBackground.visible = false
-            controlsBar.height = 0
         }
 
         function showControls() {
@@ -202,7 +201,6 @@ ApplicationWindow {
             controlsBackground.visible = true
             titleBar.visible = true
             titleBackground.visible = true
-            controlsBar.height = renderer.height / 24
         }
 
         Dialog {
@@ -278,7 +276,7 @@ ApplicationWindow {
 
         Rectangle {
             id: titleBar
-            height: renderer.height / 24
+            height: Screen.width / 24
             anchors.right: parent.right
             anchors.rightMargin: parent.width / 128
             anchors.left: parent.left
@@ -324,7 +322,7 @@ ApplicationWindow {
 
         Rectangle {
             id: controlsBar
-            height: renderer.height / 24
+            height: Screen.height / 24
             anchors.right: parent.right
             anchors.rightMargin: parent.width / 128
             anchors.left: parent.left
@@ -456,7 +454,7 @@ ApplicationWindow {
                     id: progressBackground
                     x: progressBar.leftPadding
                     y: progressBar.topPadding + progressBar.availableHeight / 2 - height / 2
-                    implicitHeight: (renderer.height / 256) < 2 ? 2 : renderer.height / 256
+                    implicitHeight: (Screen.height / 256) < 2 ? 2 : Screen.height / 256
                     width: progressBar.availableWidth
                     height: implicitHeight
                     color: Qt.rgba(255, 255, 255, 0.4)
