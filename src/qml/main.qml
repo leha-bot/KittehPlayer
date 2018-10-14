@@ -16,6 +16,15 @@ ApplicationWindow {
 
     property int lastScreenVisibility
 
+    function toggleFullscreen(){
+        if (mainWindow.visibility != Window.FullScreen) {
+            lastScreenVisibility = mainWindow.visibility
+            mainWindow.visibility = Window.FullScreen
+        } else {
+            mainWindow.visibility = lastScreenVisibility
+        }
+    }
+
     function updatePlayPauseIcon() {
         var paused = renderer.getProperty("pause")
         if (paused) {
@@ -132,7 +141,14 @@ ApplicationWindow {
                         argument = argument.substr(2)
                         if (argument.length > 0) {
                             var splitArg = argument.split(/=(.+)/)
-                            renderer.setOption(splitArg[0], splitArg[1])
+                            if (splitArg[0] == "fullscreen") {
+                                toggleFullscreen()
+                            } else {
+                                if (splitArg[1].length == 0) {
+                                    splitArg[1] = "true"
+                                }
+                                renderer.setOption(splitArg[0], splitArg[1])
+                            }
                         }
                     } else {
                         renderer.command(["loadfile", argument, "append-play"])
@@ -635,12 +651,7 @@ ApplicationWindow {
                 anchors.right: parent.right
                 display: AbstractButton.IconOnly
                 onClicked: {
-                    if (mainWindow.visibility != Window.FullScreen) {
-                        lastScreenVisibility = mainWindow.visibility
-                        mainWindow.visibility = Window.FullScreen
-                    } else {
-                        mainWindow.visibility = lastScreenVisibility
-                    }
+                    toggleFullscreen()
                 }
 
                 background: Rectangle {
