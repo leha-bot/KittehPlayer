@@ -9,7 +9,7 @@ git clone --depth 1 https://github.com/mpv-player/mpv-build mpv-build || true
 cd mpv-build
 
 git clone --depth 1 https://aomedia.googlesource.com/aom aom || true
-mkdir aom-build  || true
+mkdir aom-build || true
 cd aom-build
 cmake ../aom -G "Unix Makefiles"
 make -j`nproc`
