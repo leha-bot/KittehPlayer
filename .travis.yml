@@ -4,6 +4,7 @@ sudo: require
 dist: trusty
 
 cache:
+  apt: true
   ccache: true
   directories:
     - /var/cache/apt/archives
