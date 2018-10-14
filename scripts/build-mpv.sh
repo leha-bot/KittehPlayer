@@ -6,10 +6,10 @@ CFLAGS="-fPIC -Os"
 git clone --depth 1 https://github.com/mpv-player/mpv-build mpv-build || true
 cd mpv-build
 
-git clone --depth 1 https://aomedia.googlesource.com/aom aom || true
+git clone --depth 1 https://github.com/mozilla/aom aom || true
 mkdir aom-build || true
 cd aom-build
-cmake ../aom -G "Unix Makefiles" -DCMAKE_INSTALL_PREFIX="/usr" -DCMAKE_BUILD_TYPE=Release -DBUILD_SHARED_LIBS=1 -DENABLE_TESTS=0
+../aom/configure --enable-pic --enable-av1 --enable-shared --prefix=/usr --disable-sse --disable-runtime-cpu-detect --disable-optimizations
 make -j`nproc`
 sudo make install
 cd ..
