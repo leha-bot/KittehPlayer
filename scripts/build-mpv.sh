@@ -5,19 +5,20 @@ set -ex
 
 CFLAGS="-fPIC -Os"
 
-rm -rf mpv-build && git clone --depth 1 https://github.com/mpv-player/mpv-build mpv-build
+git clone --depth 1 https://github.com/mpv-player/mpv-build mpv-build || true
 cd mpv-build
 
-git clone --depth 1 https://aomedia.googlesource.com/aom
-mkdir build && cd build
+git clone --depth 1 https://aomedia.googlesource.com/aom aom || true
+mkdir aom-build  || true
+cd aom-build
 cmake ../aom -G "Unix Makefiles"
 make -j`nproc`
 sudo make install
 cd ..
 
-rm -rf ffmpeg && git clone --depth 1 https://github.com/FFmpeg/FFmpeg.git ffmpeg
-rm -rf mpv && git clone --depth 1 https://github.com/mpv-player/mpv.git mpv 
-rm -rf libass && git clone --depth 1 https://github.com/libass/libass.git libass
+git clone --depth 1 https://github.com/FFmpeg/FFmpeg.git ffmpeg || true
+git clone --depth 1 https://github.com/mpv-player/mpv.git mpv || true
+git clone --depth 1 https://github.com/libass/libass.git libass || true
 
 echo "--enable-libaom" > ffmpeg_options
 
