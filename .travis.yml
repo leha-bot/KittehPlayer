@@ -13,7 +13,7 @@ before_install:
   - sudo apt-get update 
 
 install:
-  - sudo apt-get -y install qt510-meta-minimal qt510quickcontrols2 qt510imageformats qt510svg libgl1-mesa-dev 
+  - sudo apt-get -y install qt510-meta-minimal qt510quickcontrols qt510quickcontrols2 qt510imageformats qt510svg libgl1-mesa-dev 
   - sudo apt-get build-dep mpv
   - source /opt/qt*/bin/qt*-env.sh
 
@@ -25,7 +25,7 @@ script:
   - make INSTALL_ROOT=appdir -j$(nproc) install ; find appdir/
   - #wget "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage"
   - #chmod a+x linuxdeployqt-continuous-x86_64.AppImage
-  - wget "https://artifacts.assassinate-you.net/artifactory/linuxdeploy/travis-154/linuxdeploy-x86_64.AppImage"
+  - wget "https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage"
   - wget https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/continuous/linuxdeploy-plugin-qt-x86_64.AppImage
   - chmod +x linux*
   - unset QTDIR; unset QT_PLUGIN_PATH ; unset LD_LIBRARY_PATH
