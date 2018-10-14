@@ -4,6 +4,8 @@ export PATH="/usr/lib/ccache:/usr/lib/ccache/bin:$PATH"
 
 bash scripts/build-mpv.sh
 
+export QML_SOURCES_PATH=src/qml
+
 qmake CONFIG+=release PREFIX=/usr
 make -j$(nproc)
 make INSTALL_ROOT=appdir -j$(nproc) install ; find appdir/

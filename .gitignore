@@ -8,3 +8,4 @@ moc_*
 qrc_qml.cpp
 appdir
 AppDir
+Makefile
