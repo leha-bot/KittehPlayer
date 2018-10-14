@@ -5,7 +5,6 @@ dist: trusty
 cache:
   ccache: true
   directories:
-  - mpv-build
   - $HOME/.ccache
 
 before_install:
@@ -30,7 +29,7 @@ script:
   - chmod +x linux*
   - unset QTDIR; unset QT_PLUGIN_PATH ; unset LD_LIBRARY_PATH
   - export VERSION=$(git rev-parse --short HEAD) # linuxdeployqt uses this for naming the file
-  - mkdir -p appdir/usr/plugins/imageformats/
+  - mkdir -p appdir/usr/plugins/imageformats/sss3
   - cp /opt/qt*/plugins/imageformats/libqsvg.so appdir/usr/plugins/imageformats/
   - #./linuxdeployqt-continuous-x86_64.AppImage appdir/usr/share/applications/*.desktop -qmldir=./src/qml/ -bundle-non-qt-libs
   - #./linuxdeployqt-continuous-x86_64.AppImage appdir/usr/share/applications/*.desktop -qmldir=./src/qml/ -appimage
