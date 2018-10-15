@@ -7,7 +7,7 @@ import player 1.0
 
 import "codes.js" as LanguageCodes
 
-ApplicationWindow {
+Window {
     id: mainWindow
     title: "Qt Quick Controls 2"
     visible: true
@@ -276,7 +276,7 @@ ApplicationWindow {
 
         Rectangle {
             id: titleBar
-            height: Screen.width / 24
+            height: Screen.height / 24
             anchors.right: parent.right
             anchors.rightMargin: parent.width / 128
             anchors.left: parent.left
@@ -334,8 +334,6 @@ ApplicationWindow {
 
             Rectangle {
                 id: subtitlesMenuBackground
-                height: controlsBar.height + (progressBar.topPadding * 2)
-                        - (progressBackground.height * 2)
                 anchors.fill: subtitlesMenu
                 Layout.fillWidth: true
                 Layout.fillHeight: true
@@ -443,6 +441,7 @@ ApplicationWindow {
                 anchors.left: parent.left
                 anchors.right: parent.right
                 anchors.bottomMargin: 0
+                anchors.topMargin: progressBackground.height + handleRect.height
 
                 bottomPadding: 0
 
@@ -468,6 +467,7 @@ ApplicationWindow {
                 }
 
                 handle: Rectangle {
+                    id: handleRect
                     x: progressBar.leftPadding + progressBar.visualPosition
                        * (progressBar.availableWidth - width)
                     y: progressBar.topPadding + progressBar.availableHeight / 2 - height / 2
