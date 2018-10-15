@@ -131,11 +131,11 @@ ApplicationWindow {
         Component.onCompleted: {
             var args = Qt.application.arguments
             var len = Qt.application.arguments.length
-            var argNo = 0
+            var argNo = 1
             renderer.setOption("ytdl-format", "bestvideo[width<=" + Screen.width
                                + "][height<=" + Screen.height + "]+bestaudio")
             if (len > 1) {
-                for (argNo = 0; argNo < len; argNo++) {
+                for (argNo = 1; argNo < len; argNo++) {
                     var argument = args[argNo]
                     if (argument.startsWith("--")) {
                         argument = argument.substr(2)
@@ -215,7 +215,7 @@ ApplicationWindow {
 
             TextField {
                 id: pathText
-                text: "/home/kitteh/babyshark.mkv"
+                text: "/home/kitteh/test.mkv"
                 placeholderText: qsTr("URL / File Path")
             }
         }
