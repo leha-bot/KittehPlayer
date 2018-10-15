@@ -12,7 +12,7 @@ cd aom-build
   cmake -G Ninja ../aom \
     -DCMAKE_INSTALL_PREFIX=/usr \
     -DBUILD_SHARED_LIBS=1 \
-    -DENABLE_TESTS=0
+    -DENABLE_TESTS=0 -G "Unix Makefiles"
   cmake --build .
   sudo cmake --build . --target install
 cd ..
