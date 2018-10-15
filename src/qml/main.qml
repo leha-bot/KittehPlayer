@@ -170,7 +170,7 @@ ApplicationWindow {
 
             var hour = h > 0 ? h + ":" : ""
             var minute = m + ":"
-            var second = s > 10 ? s : "0" + s
+            var second = s < 10 ? "0" + s : s
             return hour + minute + second
         }
 
