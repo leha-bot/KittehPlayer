@@ -5,10 +5,14 @@ QT += qml quickcontrols2 widgets
 
 SOURCES += src/main.cpp src/mpvobject.cpp
 
+CONFIG += release
+exists("/usr/lib/libmpv.a") {
+LIBS += -L/usr/lib /usr/lib/libmpv.a
+} else {
 QT_CONFIG -= no-pkg-config
-CONFIG += link_pkgconfig release
+CONFIG += link_pkgconfig
 PKGCONFIG += mpv
-
+}
 RESOURCES += src/qml/qml.qrc
 
 unix {
