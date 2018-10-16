@@ -15,6 +15,7 @@ make INSTALL_ROOT=appdir -j$(nproc) install ; find appdir/
 wget -nc "https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage"
 wget -nc https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/continuous/linuxdeploy-plugin-qt-x86_64.AppImage
 chmod +x linux*
+cp /usr/lib/libjack.so* appdir/usr/lib
 export VERSION=$(git rev-parse --short HEAD) # linuxdeployqt uses this for naming the file
 #mkdir -p appdir/usr/plugins/imageformats
 #cp /opt/qt*/plugins/imageformats/libqsvg.so appdir/usr/plugins/imageformats/
