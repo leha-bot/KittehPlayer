@@ -9,7 +9,7 @@ import "codes.js" as LanguageCodes
 
 Window {
     id: mainWindow
-    title: "Qt Quick Controls 2"
+    title: titleLabel.text
     visible: true
     width: 720
     height: 480
@@ -189,6 +189,7 @@ Window {
         }
 
         function hideControls() {
+            renderer.setOption("sub-margin-y", "22")
             controlsBar.visible = false
             controlsBackground.visible = false
             titleBar.visible = false
@@ -197,6 +198,7 @@ Window {
 
         function showControls() {
             updateControls()
+            renderer.setOption("sub-margin-y", String(controlsBar.height + progressBar.height))
             controlsBar.visible = true
             controlsBackground.visible = true
             titleBar.visible = true
@@ -249,7 +251,7 @@ Window {
             onClicked: loadDialog.open()
             Timer {
                 id: mouseAreaPlayerTimer
-                interval: 2000
+                interval: 1000
                 running: false
                 repeat: false
                 onTriggered: {
@@ -477,6 +479,7 @@ Window {
                     color: "red"
                     border.color: "red"
                 }
+
             }
 
             Button {

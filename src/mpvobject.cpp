@@ -177,12 +177,22 @@ MpvObject::MpvObject(QQuickItem * parent)
 #ifndef USE_RENDER
     mpv::qt::set_option_variant(mpv, "vo", "opengl-cb");
 #endif
+
+    // Enable default bindings, because we're lazy. Normally, a player using
+    // mpv as backend would implement its own key bindings.
+    mpv_set_option_string(mpv, "input-default-bindings", "yes");
+
+    // Enable keyboard input on the X11 window. For the messy details, see
+    // --input-vo-keyboard on the manpage.
+    mpv_set_option_string(mpv, "input-vo-keyboard", "yes");
+
     // Fix?
     mpv::qt::set_option_variant(mpv, "ytdl", "yes");
 
     mpv_set_option_string(mpv, "input-default-bindings", "yes");
     mpv_set_option_string(mpv, "input-vo-keyboard", "yes");
 
+    mpv::qt::set_option_variant(mpv, "idle", "once");
 
 
     mpv::qt::set_option_variant(mpv, "hwdec", "off");
@@ -319,24 +329,16 @@ void MpvObject::handle_mpv_event(mpv_event *event)
             if (prop->format == MPV_FORMAT_STRING) {
                 QMetaObject::invokeMethod(this,"setTitle");
             }
-        } else if (strcmp(prop->name, "chapter-list") == 0 || strcmp(prop->name, "track-list") == 0) {
-            if (prop->format == MPV_FORMAT_NODE) {
-                /*
-                QVariant v = mpv::qt::node_to_variant((mpv_node *)prop->data);
-                // Abuse JSON support for easily printing the mpv_node contents.
-                QJsonDocument d = QJsonDocument::fromVariant(v);
-                printf("Change property %s:\n", QString(prop->name).toStdString().c_str());
-                printf(d.toJson().data());*/
-                //QMetaObject::invokeMethod(this,"updatePlaylist");
-            }
         }
         break;
     }
     case MPV_EVENT_SHUTDOWN: {
         exit(0);
+        break;
     }
-    default: ;
-        // Ignore uninteresting or unknown events.
+    default: {
+        break;
+    }
     }
 }
 
