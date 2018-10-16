@@ -1,11 +1,10 @@
 #!/bin/bash
 set -ex
 
-CFLAGS="-fPIC -Os"
+export CFLAGS="-fPIC -Os"
 
 export CCACHE_SLOPPINESS=time_macros 
 export CCACHE=`which ccache`
-export CFLAGS="-D__DATE__= -D__TIME__= -D__TIMESTAMP__= $CFLAGS"
 
 
 git clone --depth 1 https://github.com/mpv-player/mpv-build mpv-build || true
