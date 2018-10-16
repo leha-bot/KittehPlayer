@@ -7,7 +7,7 @@ cache:
   directories:
   - $HOME/.ccache
   - $HOME/.cache/apt
-  - $HOME/.cache/mpv-build
+  #- $HOME/.cache/mpv-build
 
 before_install:
   - mkdir -p $HOME/.cache/apt/partial

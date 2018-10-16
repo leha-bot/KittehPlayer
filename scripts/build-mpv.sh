@@ -5,11 +5,6 @@ export OLDDIR=`pwd`
 
 export CFLAGS="-fPIC -Os"
 
-export CCACHE_SLOPPINESS=time_macros 
-export CCACHE=`which ccache`
-
-cd $HOME/.cache
-
 git clone --depth 1 https://github.com/mpv-player/mpv-build mpv-build || true
 cd mpv-build
 
@@ -32,7 +27,7 @@ git clone --depth 1 https://github.com/libass/libass.git libass || true
 echo "--enable-libmpv-shared --prefix=/usr" > mpv_options
 echo "--disable-caca --disable-wayland --disable-gl-wayland --disable-libarchive  --disable-zlib  --disable-tv --disable-debug-build --disable-manpage-build --disable-vapoursynth --disable-libsmbclient" >> mpv_options
 
-./build -j`nproc`
+./rebuild -j`nproc`
 sudo ./install
 ccache -s
 cd $OLDDIR
