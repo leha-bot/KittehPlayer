@@ -5,7 +5,8 @@ export OLDDIR=`pwd`
 
 export CFLAGS="-fPIC -Os"
 
-git clone --depth 1 https://github.com/mpv-player/mpv-build mpv-build || true
+rm -rf mpv-build
+git clone --depth 1 https://github.com/mpv-player/mpv-build mpv-build
 cd mpv-build
 
 #git clone --depth 1 http://aomedia.googlesource.com/aom aom || true
@@ -19,9 +20,10 @@ cd mpv-build
 #sudo make install
 #cd ..
 
-git clone --depth 1 https://github.com/FFmpeg/FFmpeg.git ffmpeg || true
-git clone --depth 1 https://github.com/mpv-player/mpv.git mpv || true
-git clone --depth 1 https://github.com/libass/libass.git libass || true
+rm -rf ffmpeg mpv libass
+git clone --depth 1 https://github.com/FFmpeg/FFmpeg.git ffmpeg
+git clone --depth 1 https://github.com/mpv-player/mpv.git mpv
+git clone --depth 1 https://github.com/libass/libass.git libass
 
 #echo "--enable-libaom" > ffmpeg_options
 echo "--disable-programs --disable-runtime-cpudetect --enable-small" > ffmpeg_options
