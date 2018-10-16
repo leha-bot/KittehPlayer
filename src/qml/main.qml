@@ -16,7 +16,7 @@ Window {
 
     property int lastScreenVisibility
 
-    function toggleFullscreen(){
+    function toggleFullscreen() {
         if (mainWindow.visibility != Window.FullScreen) {
             lastScreenVisibility = mainWindow.visibility
             mainWindow.visibility = Window.FullScreen
@@ -198,7 +198,8 @@ Window {
 
         function showControls() {
             updateControls()
-            renderer.setOption("sub-margin-y", String(controlsBar.height + progressBar.height))
+            renderer.setOption("sub-margin-y",
+                               String(controlsBar.height + progressBar.height))
             controlsBar.visible = true
             controlsBackground.visible = true
             titleBar.visible = true
@@ -479,7 +480,6 @@ Window {
                     color: "red"
                     border.color: "red"
                 }
-
             }
 
             Button {
@@ -488,7 +488,8 @@ Window {
                 icon.source: "icons/prev.svg"
                 icon.color: "white"
                 display: AbstractButton.IconOnly
-                anchors.top: parent.top; anchors.bottom: parent.bottom;
+                anchors.top: parent.top
+                anchors.bottom: parent.bottom
                 visible: false
                 width: 0
                 onClicked: {
@@ -506,7 +507,8 @@ Window {
                 icon.source: "icons/pause.svg"
                 icon.color: "white"
                 display: AbstractButton.IconOnly
-                anchors.top: parent.top; anchors.bottom: parent.bottom;
+                anchors.top: parent.top
+                anchors.bottom: parent.bottom
                 anchors.left: playlistPrevButton.right
                 onClicked: {
                     updatePlayPause()
@@ -522,7 +524,8 @@ Window {
                 icon.source: "icons/next.svg"
                 icon.color: "white"
                 display: AbstractButton.IconOnly
-                anchors.top: parent.top; anchors.bottom: parent.bottom;
+                anchors.top: parent.top
+                anchors.bottom: parent.bottom
                 anchors.left: playPauseButton.right
                 onClicked: {
                     renderer.command(["playlist-next", "force"])
@@ -538,7 +541,8 @@ Window {
                 icon.source: "icons/volume-up.svg"
                 icon.color: "white"
                 display: AbstractButton.IconOnly
-                anchors.top: parent.top; anchors.bottom: parent.bottom;
+                anchors.top: parent.top
+                anchors.bottom: parent.bottom
                 anchors.left: playlistNextButton.right
                 onClicked: {
                     renderer.command(["cycle", "mute"])
@@ -604,7 +608,8 @@ Window {
                 text: "0:00 / 0:00"
                 color: "white"
                 anchors.left: volumeBar.right
-                anchors.top: parent.top; anchors.bottom: parent.bottom;
+                anchors.top: parent.top
+                anchors.bottom: parent.bottom
                 padding: 5
                 font.family: notoFont.name
                 font.pixelSize: 12
@@ -618,7 +623,8 @@ Window {
                 icon.source: "icons/subtitles.svg"
                 icon.color: "white"
                 anchors.right: settingsButton.left
-                anchors.top: parent.top; anchors.bottom: parent.bottom;
+                anchors.top: parent.top
+                anchors.bottom: parent.bottom
                 display: AbstractButton.IconOnly
                 onClicked: {
                     tracksMenuUpdate()
@@ -637,7 +643,8 @@ Window {
                 icon.color: "white"
                 Layout.alignment: Qt.AlignVCenter | Qt.AlignRight
                 anchors.right: fullscreenButton.left
-                anchors.top: parent.top; anchors.bottom: parent.bottom;
+                anchors.top: parent.top
+                anchors.bottom: parent.bottom
                 display: AbstractButton.IconOnly
                 onClicked: {
                     loadDialog.open()
@@ -654,7 +661,8 @@ Window {
                 icon.color: "white"
                 Layout.alignment: Qt.AlignVCenter | Qt.AlignRight
                 anchors.right: parent.right
-                anchors.top: parent.top; anchors.bottom: parent.bottom;
+                anchors.top: parent.top
+                anchors.bottom: parent.bottom
                 display: AbstractButton.IconOnly
                 onClicked: {
                     toggleFullscreen()
@@ -666,6 +674,21 @@ Window {
             }
 
             //}
+        }
+
+        Item {
+            anchors.fill: parent
+            focus: true
+            Keys.onPressed: {
+                if (event.key == Qt.Key_K || event.key == Qt.Key_Space) {
+                    renderer.command(["cycle", "pause"])
+                } else if (event.key == Qt.Key_J) {
+                    renderer.command(["seek", "-10"])
+                } else if (event.key == Qt.Key_L) {
+                    renderer.command(["seek", "10"])
+                }
+                updateControls()
+            }
         }
     }
 }
