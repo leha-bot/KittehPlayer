@@ -3,6 +3,11 @@ set -ex
 
 CFLAGS="-fPIC -Os"
 
+export CCACHE_SLOPPINESS=time_macros 
+
+export CFLAGS="-D__DATE__= -D__TIME__= -D__TIMESTAMP__= $CFLAGS"
+
+
 git clone --depth 1 https://github.com/mpv-player/mpv-build mpv-build || true
 cd mpv-build
 
@@ -28,4 +33,5 @@ echo "--disable-caca --disable-wayland --disable-gl-wayland --disable-libarchive
 
 ./rebuild -j`nproc`
 sudo ./install
+ccache -s
 cd ..
