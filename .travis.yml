@@ -6,8 +6,12 @@ cache:
   ccache: true
   directories:
   - $HOME/.ccache
+  - $HOME/.cache/apt
 
 before_install:
+  - mkdir -p $HOME/.cache/apt/partial
+  - sudo rm -rf /var/cache/apt/archives
+  - sudo ln -s $HOME/.cache/apt /var/cache/apt/archives
   - sudo add-apt-repository ppa:beineri/opt-qt-5.11.1-xenial -y
   - sudo apt-get update 
 

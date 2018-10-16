@@ -6,7 +6,6 @@ export CFLAGS="-fPIC -Os"
 export CCACHE_SLOPPINESS=time_macros 
 export CCACHE=`which ccache`
 
-
 git clone --depth 1 https://github.com/mpv-player/mpv-build mpv-build || true
 cd mpv-build
 
