@@ -7,6 +7,7 @@ export PATH="/usr/lib/ccache:/usr/lib/ccache/bin:$PATH"
 bash scripts/build-mpv.sh
 
 export QML_SOURCES_PATHS=src/qml
+export V=0 VERBOSE=0
 
 qmake CONFIG+=release PREFIX=/usr
 make -j$(nproc)
