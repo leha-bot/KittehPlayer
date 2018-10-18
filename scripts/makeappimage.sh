@@ -28,4 +28,4 @@ export PIP_REQUIREMENTS=youtube-dl
 #ln -s ../conda/bin/youtube-dl appdir/usr/bin/youtube-dl
 # --plugin conda
 sudo wget https://yt-dl.org/downloads/latest/youtube-dl -O appdir/usr/bin/youtube-dl
-./linuxdeploy-x86_64.AppImage --appdir appdir --plugin --output appimage
+./linuxdeploy-x86_64.AppImage --appdir appdir --plugin qt --output appimage
