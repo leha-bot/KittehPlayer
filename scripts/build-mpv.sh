@@ -16,9 +16,10 @@ export MPVDIR=`pwd`
 mkdir aom -p
 cd aom
 git clone --depth 1 https://aomedia.googlesource.com/aom
-cmake aom/
-make
+cmake aom/ -DCMAKE_INSTALL_PREFIX=/usr -DBUILD_SHARED_LIBS=1 -DENABLE_TESTS=0 -G "Unix Makefiles"
+make 
 sudo checkinstall -y --deldoc=yes
+sudo make install
 cd $MPVDIR
 
 rm -rf ffmpeg mpv libass
