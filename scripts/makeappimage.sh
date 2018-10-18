@@ -25,5 +25,5 @@ export VERSION=$(git rev-parse --short HEAD) # linuxdeployqt uses this for namin
 #./linuxdeployqt-continuous-x86_64.AppImage appdir/usr/share/applications/*.desktop -qmldir=./src/qml/ -bundle-non-qt-libs
 #./linuxdeployqt-continuous-x86_64.AppImage appdir/usr/share/applications/*.desktop -qmldir=./src/qml/ -appimage
 export PIP_REQUIREMENTS=youtube-dl
-ln -s ../conda/bin/youtube-dl appdir/usr/bin/youtube-dl
+#ln -s ../conda/bin/youtube-dl appdir/usr/bin/youtube-dl
 ./linuxdeploy-x86_64.AppImage --appdir appdir --plugin qt --plugin conda --output appimage
