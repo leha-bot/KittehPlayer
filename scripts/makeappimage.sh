@@ -27,5 +27,5 @@ export VERSION=$(git rev-parse --short HEAD) # linuxdeployqt uses this for namin
 #export PIP_REQUIREMENTS=youtube-dl
 export CONDA_PACKAGES=youtube-dl
 #ln -s ../conda/bin/youtube-dl appdir/usr/bin/youtube-dl
-sudo wget https://yt-dl.org/downloads/latest/youtube-dl -O appdir/usr/bin/youtube-dl
+#sudo wget https://yt-dl.org/downloads/latest/youtube-dl -O appdir/usr/bin/youtube-dl
 ./linuxdeploy-x86_64.AppImage --appdir appdir --plugin qt --plugin conda --output appimage -v 3
