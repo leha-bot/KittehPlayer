@@ -36,6 +36,5 @@ echo "--disable-caca --disable-wayland --disable-gl-wayland --disable-libarchive
 ./rebuild -j`nproc` 2>&1 > build.log
 sudo ./install
 ccache -s
-curl --upload-file build.log https://transfer.sh/KittehPlayer-build.log
 
 cd $OLDDIR
