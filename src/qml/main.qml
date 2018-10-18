@@ -128,7 +128,14 @@ Window {
     MpvObject {
         id: renderer
         anchors.fill: parent
-        Component.onCompleted: {
+
+        FontLoader {
+            id: notoFont
+            source: "fonts/NotoSans.ttf"
+        }
+        Component.onCompleted: { startPlayer() }
+
+        function startPlayer() {
             var args = Qt.application.arguments
             var len = Qt.application.arguments.length
             var argNo = 1
@@ -155,11 +162,6 @@ Window {
                     }
                 }
             }
-        }
-
-        FontLoader {
-            id: notoFont
-            source: "fonts/NotoSans.ttf"
         }
 
         function createTimestamp(d) {
