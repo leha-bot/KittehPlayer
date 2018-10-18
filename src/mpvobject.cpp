@@ -176,6 +176,8 @@ MpvObject::MpvObject(QQuickItem * parent)
 
 #ifndef USE_RENDER
     mpv::qt::set_option_variant(mpv, "vo", "opengl-cb");
+#else
+    mpv::qt::set_option_variant(mpv, "vo", "libmpv");
 #endif
 
     // Enable default bindings, because we're lazy. Normally, a player using
