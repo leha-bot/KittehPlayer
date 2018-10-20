@@ -138,13 +138,14 @@ Window {
         function startPlayer() {
             var args = Qt.application.arguments
             var len = Qt.application.arguments.length
-            var argNo = 1
+            var argNo = 0
             renderer.setOption("ytdl-format", "bestvideo[width<=" + Screen.width
                                + "][height<=" + Screen.height + "]+bestaudio")
             if (len > 1) {
                 for (argNo = 1; argNo < len; argNo++) {
                     var argument = args[argNo]
-                    if (argument.startsWith("--")) {
+		    if (argument.indexOf("KittehPlayer") !== -1) { continue; } 
+                    /* if (argument.startsWith("--")) {
                         argument = argument.substr(2)
                         if (argument.length > 0) {
                             var splitArg = argument.split(/=(.+)/)
@@ -157,9 +158,9 @@ Window {
                                 renderer.setOption(splitArg[0], splitArg[1])
                             }
                         }
-                    } else {
+                    } else { */
                         renderer.command(["loadfile", argument, "append-play"])
-                    }
+                    //}
                 }
             }
         }
@@ -486,7 +487,7 @@ Window {
 
             Button {
                 id: playlistPrevButton
-                icon.name: "prev"
+                //icon.name: "prev"
                 icon.source: "icons/prev.svg"
                 icon.color: "white"
                 display: AbstractButton.IconOnly
@@ -505,7 +506,7 @@ Window {
 
             Button {
                 id: playPauseButton
-                icon.name: "pause"
+                //icon.name: "pause"
                 icon.source: "icons/pause.svg"
                 icon.color: "white"
                 display: AbstractButton.IconOnly
@@ -522,7 +523,7 @@ Window {
 
             Button {
                 id: playlistNextButton
-                icon.name: "next"
+                //icon.name: "next"
                 icon.source: "icons/next.svg"
                 icon.color: "white"
                 display: AbstractButton.IconOnly
@@ -539,7 +540,7 @@ Window {
 
             Button {
                 id: volumeButton
-                icon.name: "volume-up"
+                //icon.name: "volume-up"
                 icon.source: "icons/volume-up.svg"
                 icon.color: "white"
                 display: AbstractButton.IconOnly
@@ -621,7 +622,7 @@ Window {
 
             Button {
                 id: subtitlesButton
-                icon.name: "subtitles"
+                //icon.name: "subtitles"
                 icon.source: "icons/subtitles.svg"
                 icon.color: "white"
                 anchors.right: settingsButton.left
@@ -640,7 +641,7 @@ Window {
 
             Button {
                 id: settingsButton
-                icon.name: "settings"
+                //icon.name: "settings"
                 icon.source: "icons/settings.svg"
                 icon.color: "white"
                 Layout.alignment: Qt.AlignVCenter | Qt.AlignRight
@@ -658,7 +659,7 @@ Window {
 
             Button {
                 id: fullscreenButton
-                icon.name: "fullscreen"
+                //icon.name: "fullscreen"
                 icon.source: "icons/fullscreen.svg"
                 icon.color: "white"
                 Layout.alignment: Qt.AlignVCenter | Qt.AlignRight
