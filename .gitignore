@@ -9,3 +9,4 @@ qrc_qml.cpp
 appdir
 AppDir
 Makefile
+linuxdeploy*
