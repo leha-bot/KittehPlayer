@@ -22,7 +22,7 @@ if [ "$ARCH" == "" ]; then
 fi
 
 cp -f /usr/lib/*/libjack.so.0 appdir/usr/lib
-export UPD_INFO="gh-releases-zsync|NamedKitten|KittehPlayer|continuous|KittehPlayer-$ARCH.AppImage"
+export UPD_INFO="gh-releases-zsync|NamedKitten|KittehPlayer|continuous|KittehPlayer-$ARCH.AppImage.zsync"
 
 #mkdir -p appdir/usr/plugins/imageformats
 #cp /opt/qt*/plugins/imageformats/libqsvg.so appdir/usr/plugins/imageformats/
