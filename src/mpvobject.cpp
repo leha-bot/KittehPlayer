@@ -29,7 +29,6 @@ void wakeup(void *ctx)
     QMetaObject::invokeMethod((MpvObject*)ctx, "on_mpv_events", Qt::QueuedConnection);
 }
 
-#ifdef USE_RENDER
 void on_mpv_redraw(void *ctx)
 {
     MpvObject::on_update(ctx);
@@ -44,36 +43,21 @@ static void *get_proc_address_mpv(void *ctx, const char *name)
 
     return reinterpret_cast<void *>(glctx->getProcAddress(QByteArray(name)));
 }
-#endif
 
 
 }
 
 class MpvRenderer : public QQuickFramebufferObject::Renderer
 {
-#ifdef USE_RENDER
-    MpvObject *obj;
-#else
-    static void *get_proc_address(void *ctx, const char *name) {
-        (void)ctx;
-        QOpenGLContext *glctx = QOpenGLContext::currentContext();
-        if (!glctx)
-            return NULL;
-        return (void *)glctx->getProcAddress(QByteArray(name));
-    }
-      mpv::qt::Handle mpv;
-    QQuickWindow *window;
-    mpv_opengl_cb_context *mpv_gl;
-#endif    
+    MpvObject *obj;  
 
 public:
-
-#ifdef USE_RENDER
 
     MpvRenderer(MpvObject *new_obj)
         : obj{new_obj}
     {
     }
+
 
     virtual ~MpvRenderer() {}
 
@@ -99,28 +83,10 @@ public:
         return QQuickFramebufferObject::Renderer::createFramebufferObject(size);
         }
 
-#else 
-
-       MpvRenderer(const MpvObject *obj)
-        : mpv(obj->mpv), window(obj->window()), mpv_gl(obj->mpv_gl)
-           {
-        int r = mpv_opengl_cb_init_gl(mpv_gl, NULL, get_proc_address, NULL);
-        if (r < 0)
-            throw std::runtime_error("could not initialize OpenGL");
-        }
-
-        virtual ~MpvRenderer() {
-            mpv_opengl_cb_uninit_gl(mpv_gl);
-        }
-
-#endif
-
-
 
     void render()
     {
             
-#ifdef USE_RENDER
         obj->window()->resetOpenGLState();
 
         QOpenGLFramebufferObject *fbo = framebufferObject();
@@ -141,28 +107,12 @@ public:
         // other API details.
         mpv_render_context_render(obj->mpv_gl, params);
         obj->window()->resetOpenGLState();
-#else
-        QOpenGLFramebufferObject *fbo = framebufferObject();
-        window->resetOpenGLState();
-        mpv_opengl_cb_draw(mpv_gl, fbo->handle(), fbo->width(), fbo->height());
-        window->resetOpenGLState();
-#endif
     }
 };
 
 MpvObject::MpvObject(QQuickItem * parent)
-#ifdef USE_RENDER
     : QQuickFramebufferObject(parent), mpv{mpv_create()}, mpv_gl(nullptr)
-#else
-    : QQuickFramebufferObject(parent), mpv_gl(0)
-#endif
 {
-
-
-#ifndef USE_RENDER
-    mpv = mpv::qt::Handle::FromRawHandle(mpv_create());
-#endif
-
 
     if (!mpv)
         throw std::runtime_error("could not create mpv context");
@@ -170,39 +120,20 @@ MpvObject::MpvObject(QQuickItem * parent)
     mpv_set_option_string(mpv, "terminal", "yes");
     mpv_set_option_string(mpv, "msg-level", "all=v");
 
-    if (mpv_initialize(mpv) < 0)
-        throw std::runtime_error("could not initialize mpv context");
-
-#ifndef USE_RENDER
-    mpv::qt::set_option_variant(mpv, "vo", "opengl-cb");
-#endif
-
-    // Enable default bindings, because we're lazy. Normally, a player using
-    // mpv as backend would implement its own key bindings.
-    // mpv_set_option_string(mpv, "input-default-bindings", "yes");
-
-    // Enable keyboard input on the X11 window. For the messy details, see
-    // --input-vo-keyboard on the manpage.
-    // mpv_set_option_string(mpv, "input-vo-keyboard", "yes");
-
     // Fix?
-    mpv::qt::set_option_variant(mpv, "ytdl", "yes");
+    //mpv_set_option_string(mpv, "ytdl", "yes");
+    mpv_set_option_string(mpv, "vo", "libmpv");
 
-    mpv_set_option_string(mpv, "input-default-bindings", "yes");
-    mpv_set_option_string(mpv, "input-vo-keyboard", "yes");
+    mpv_set_option_string(mpv, "slang", "en");
+    mpv_set_option_string(mpv, "sub-font", "Noto Sans");
+    mpv_set_option_string(mpv, "sub-ass-override", "force");
+    mpv_set_option_string(mpv, "sub-ass", "off");
+    mpv_set_option_string(mpv, "sub-border-size", "0");
+    mpv_set_option_string(mpv, "sub-bold", "off");
+    mpv_set_option_string(mpv, "sub-scale-by-window", "on");
+    mpv_set_option_string(mpv, "sub-scale-with-window", "on");
 
-
-    mpv::qt::set_option_variant(mpv, "hwdec", "off");
-    mpv::qt::set_option_variant(mpv, "slang", "en");
-    mpv::qt::set_option_variant(mpv, "sub-font", "Noto Sans");
-    mpv::qt::set_option_variant(mpv, "sub-ass-override", "force");
-    mpv::qt::set_option_variant(mpv, "sub-ass", "off");
-    mpv::qt::set_option_variant(mpv, "sub-border-size", "0");
-    mpv::qt::set_option_variant(mpv, "sub-bold", "off");
-    mpv::qt::set_option_variant(mpv, "sub-scale-by-window", "on");
-    mpv::qt::set_option_variant(mpv, "sub-scale-with-window", "on");
-
-    mpv::qt::set_option_variant(mpv, "sub-back-color", "#C0080808");
+    mpv_set_option_string(mpv, "sub-back-color", "#C0080808");
 
 
 
@@ -217,32 +148,22 @@ MpvObject::MpvObject(QQuickItem * parent)
 
         mpv_set_wakeup_callback(mpv, wakeup, this);
 
-#ifndef USE_RENDER
-mpv_gl = (mpv_opengl_cb_context *)mpv_get_sub_api(mpv, MPV_SUB_API_OPENGL_CB);
-    if (!mpv_gl)
-        throw std::runtime_error("OpenGL not compiled in");
-    mpv_opengl_cb_set_update_callback(mpv_gl, MpvObject::on_update, (void *)this);
-#endif
-
-    mpv::qt::set_option_variant(mpv, "idle", "once");
+    if (mpv_initialize(mpv) < 0)
+        throw std::runtime_error("could not initialize mpv context");
 
     connect(this, &MpvObject::onUpdate, this, &MpvObject::doUpdate,
             Qt::QueuedConnection);
+
 }
 
 MpvObject::~MpvObject()
 {
-#ifdef USE_RENDER
     if (mpv_gl) 
     {
         mpv_render_context_free(mpv_gl);
     }
 
     mpv_terminate_destroy(mpv);
-#else
-    if (mpv_gl)
-        mpv_opengl_cb_set_update_callback(mpv_gl, NULL, NULL);
-#endif
 }
 
 void MpvObject::on_update(void *ctx)
@@ -332,9 +253,6 @@ QQuickFramebufferObject::Renderer *MpvObject::createRenderer() const
 {
     window()->setPersistentOpenGLContext(true);
     window()->setPersistentSceneGraph(true);
-#ifdef USE_RENDER
+
     return new MpvRenderer(const_cast<MpvObject *>(this));
-#else
-    return new MpvRenderer(this);
-#endif
 }

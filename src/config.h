@@ -4,11 +4,9 @@
 #include <mpv/client.h>
 
 #if MPV_CLIENT_API_VERSION >= MPV_MAKE_VERSION(1, 28)
-#define USE_RENDER
+// good
 #else
-#warning "Using deprecated MPV..."
+#error "Old MPV versions without render API are not supported."
 #endif
-
-
 
 #endif // CONFIG_H

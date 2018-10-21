@@ -134,6 +134,17 @@ Window {
             source: "fonts/NotoSans.ttf"
         }
 
+        Timer {
+            id: initTimer
+            interval: 2000
+            running: false
+	    repeat: false
+            onTriggered: {
+		renderer.startPlayer()
+            }
+        }
+        Component.onCompleted: { initTimer.start() }
+
         function startPlayer() {
             var args = Qt.application.arguments
             var len = Qt.application.arguments.length
@@ -158,7 +169,7 @@ Window {
                             }
                         }
                     } else { 
-                        renderer.command(["loadfile", argument, "append-play"])
+                        renderer.command(["loadfile", argument])
                     }
                 }
             }
@@ -191,11 +202,13 @@ Window {
         }
 
         function hideControls() {
-            renderer.setOption("sub-margin-y", "22")
-            controlsBar.visible = false
-            controlsBackground.visible = false
-            titleBar.visible = false
-            titleBackground.visible = false
+	        if (! subtitlesMenu.visible) {
+                renderer.setOption("sub-margin-y", "22")
+                controlsBar.visible = false
+                controlsBackground.visible = false
+                titleBar.visible = false
+                titleBackground.visible = false
+            }
         }
 
         function showControls() {
@@ -211,17 +224,51 @@ Window {
         Dialog {
             id: loadDialog
             title: "URL / File Path"
-            standardButtons: StandardButton.Cancel | StandardButton.Open
-
-            onAccepted: {
-                renderer.command(["loadfile", pathText.text])
-                pathText.text = ""
+            FileDialog {
+                id: fileDialog
+                title: "Please choose a file"
+                folder: shortcuts.home
+                onAccepted: {
+                    renderer.command(["loadfile", String(fileDialog.fileUrl)])
+                    loadDialog.close()
+                }
+                onRejected: {
+                    fileDialog.close()
+                }
             }
-
-            TextField {
-                id: pathText
-                text: "/home/kitteh/test.mkv"
-                placeholderText: qsTr("URL / File Path")
+            contentItem: Rectangle {
+                implicitWidth: 150
+                implicitHeight: 200
+                anchors.fill: parent
+                TextField {
+                    id: pathText
+                    placeholderText: qsTr("URL / File Path")
+                }
+                Button {
+                    id: fileChooserButton
+                    flat: false
+                    anchors.top: pathText.bottom;
+                    text: "File Chooser"
+                    onClicked: fileDialog.open()
+                }
+                Button {
+                    flat: false
+                    id: loadOKButton
+                    anchors.top: fileChooserButton.bottom;
+                    text: "OK"
+                    onClicked: {
+                        renderer.command(["loadfile", pathText.text])
+                        loadDialog.close()
+                    }
+                }
+                Button {
+                    flat: false
+                    anchors.top: loadOKButton.bottom;
+                    text: "Cancel"
+                    onClicked: {
+                        loadDialog.close()
+                    }
+                }
             }
         }
 
@@ -251,7 +298,13 @@ Window {
             anchors.top: titleBar.bottom
             anchors.topMargin: 0
             hoverEnabled: true
-            onClicked: loadDialog.open()
+            onClicked: {
+                renderer.command(["cycle", "pause"])
+                updateControls()
+            }
+            onDoubleClicked: {
+                loadDialog.open()
+            }
             Timer {
                 id: mouseAreaPlayerTimer
                 interval: 1000
@@ -692,6 +745,5 @@ Window {
                 updateControls()
             }
         }
-        Component.onCompleted: { startPlayer() }
     }
 }

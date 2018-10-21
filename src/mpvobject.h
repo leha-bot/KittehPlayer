@@ -3,15 +3,9 @@
 
 #include <QQuickFramebufferObject>
 
-#include "config.h"
-
 #include <mpv/client.h>
 
-#ifdef USE_RENDER
 #include <mpv/render_gl.h>
-#else
-#include <mpv/opengl_cb.h>
-#endif
 
 #include <mpv/qthelper.hpp>
 
@@ -25,20 +19,14 @@
 #include <QtQuick/QQuickWindow>
 #include <QtQuick/QQuickView>
 
-#include <QProcess>
 
 class MpvRenderer;
 
 class MpvObject : public QQuickFramebufferObject
 {
     Q_OBJECT
-#ifdef USE_RENDER
     mpv_handle *mpv;
     mpv_render_context *mpv_gl;
-#else
-    mpv::qt::Handle mpv;
-    mpv_opengl_cb_context *mpv_gl;
-#endif
 
     friend class MpvRenderer;
 

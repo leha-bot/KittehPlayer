@@ -33,7 +33,7 @@ unix {
 
 INSTALLS += target
 
-HEADERS += src/main.h src/mpvobject.h src/config.h
+HEADERS += src/mpvobject.h src/config.h
 
 
 DISTFILES += KittehPlayer.desktop KittehPlayer.png README.md LICENSE.txt
