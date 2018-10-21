@@ -22,14 +22,7 @@ if [ "$ARCH" == "" ]; then
 fi
 
 cp -f /usr/lib/*/libjack.so.0 appdir/usr/lib
-export UPD_INFO="gh-releases-zsync|NamedKitten|KittehPlayer|continuous|KittehPlayer-$ARCH.AppImage.zsync"
 
-#mkdir -p appdir/usr/plugins/imageformats
-#cp /opt/qt*/plugins/imageformats/libqsvg.so appdir/usr/plugins/imageformats/
-#./linuxdeployqt-continuous-x86_64.AppImage appdir/usr/share/applications/*.desktop -qmldir=./src/qml/ -bundle-non-qt-libs
-#./linuxdeployqt-continuous-x86_64.AppImage appdir/usr/share/applications/*.desktop -qmldir=./src/qml/ -appimage
-#export PIP_REQUIREMENTS=youtube-dl
+export UPD_INFO="gh-releases-zsync|NamedKitten|KittehPlayer|continuous|KittehPlayer-$ARCH.AppImage.zsync"
 export CONDA_PACKAGES=youtube-dl
-#ln -s ../conda/bin/youtube-dl appdir/usr/bin/youtube-dl
-#sudo wget https://yt-dl.org/downloads/latest/youtube-dl -O appdir/usr/bin/youtube-dl
 ./linuxdeploy-x86_64.AppImage --appdir appdir --plugin conda --plugin qt --output appimage -v 3
