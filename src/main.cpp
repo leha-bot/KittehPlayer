@@ -19,7 +19,7 @@
 
 int main( int argc, char *argv[] )
 {
-setenv("QT_QUICK_CONTROLS_STYLE","Desktop",1); 
+    setenv("QT_QUICK_CONTROLS_STYLE","Desktop",1); 
     QApplication app(argc, argv);
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     qmlRegisterType<MpvObject>("player", 1, 0, "MpvObject");

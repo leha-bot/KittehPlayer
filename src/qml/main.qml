@@ -133,7 +133,6 @@ Window {
             id: notoFont
             source: "fonts/NotoSans.ttf"
         }
-        Component.onCompleted: { startPlayer() }
 
         function startPlayer() {
             var args = Qt.application.arguments
@@ -145,7 +144,7 @@ Window {
                 for (argNo = 1; argNo < len; argNo++) {
                     var argument = args[argNo]
 		    if (argument.indexOf("KittehPlayer") !== -1) { continue; } 
-                    /* if (argument.startsWith("--")) {
+                    if (argument.startsWith("--")) {
                         argument = argument.substr(2)
                         if (argument.length > 0) {
                             var splitArg = argument.split(/=(.+)/)
@@ -158,9 +157,9 @@ Window {
                                 renderer.setOption(splitArg[0], splitArg[1])
                             }
                         }
-                    } else { */
+                    } else { 
                         renderer.command(["loadfile", argument, "append-play"])
-                    //}
+                    }
                 }
             }
         }
@@ -693,5 +692,6 @@ Window {
                 updateControls()
             }
         }
+        Component.onCompleted: { startPlayer() }
     }
 }

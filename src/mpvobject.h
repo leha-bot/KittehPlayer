@@ -55,7 +55,6 @@ public slots:
     void setProperty(const QString& name, const QVariant& value);
     void setOption(const QString& name, const QVariant& value);
     QVariant getProperty(const QString& name) const;
-    QVariant getThumbnailFile(const QString& name) const;
 
 
 signals:

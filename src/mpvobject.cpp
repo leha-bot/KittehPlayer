@@ -140,7 +140,6 @@ public:
         // See render_gl.h on what OpenGL environment mpv expects, and
         // other API details.
         mpv_render_context_render(obj->mpv_gl, params);
-
         obj->window()->resetOpenGLState();
 #else
         QOpenGLFramebufferObject *fbo = framebufferObject();
@@ -169,32 +168,28 @@ MpvObject::MpvObject(QQuickItem * parent)
         throw std::runtime_error("could not create mpv context");
 
     mpv_set_option_string(mpv, "terminal", "yes");
-    //mpv_set_option_string(mpv, "msg-level", "all=v");
+    mpv_set_option_string(mpv, "msg-level", "all=v");
 
     if (mpv_initialize(mpv) < 0)
         throw std::runtime_error("could not initialize mpv context");
 
 #ifndef USE_RENDER
     mpv::qt::set_option_variant(mpv, "vo", "opengl-cb");
-#else
-    mpv::qt::set_option_variant(mpv, "vo", "libmpv");
 #endif
 
     // Enable default bindings, because we're lazy. Normally, a player using
     // mpv as backend would implement its own key bindings.
-    mpv_set_option_string(mpv, "input-default-bindings", "yes");
+    // mpv_set_option_string(mpv, "input-default-bindings", "yes");
 
     // Enable keyboard input on the X11 window. For the messy details, see
     // --input-vo-keyboard on the manpage.
-    mpv_set_option_string(mpv, "input-vo-keyboard", "yes");
+    // mpv_set_option_string(mpv, "input-vo-keyboard", "yes");
 
     // Fix?
     mpv::qt::set_option_variant(mpv, "ytdl", "yes");
 
     mpv_set_option_string(mpv, "input-default-bindings", "yes");
     mpv_set_option_string(mpv, "input-vo-keyboard", "yes");
-
-    mpv::qt::set_option_variant(mpv, "idle", "once");
 
 
     mpv::qt::set_option_variant(mpv, "hwdec", "off");
@@ -229,6 +224,8 @@ mpv_gl = (mpv_opengl_cb_context *)mpv_get_sub_api(mpv, MPV_SUB_API_OPENGL_CB);
     mpv_opengl_cb_set_update_callback(mpv_gl, MpvObject::on_update, (void *)this);
 #endif
 
+    mpv::qt::set_option_variant(mpv, "idle", "once");
+
     connect(this, &MpvObject::onUpdate, this, &MpvObject::doUpdate,
             Qt::QueuedConnection);
 }
@@ -259,19 +256,6 @@ void MpvObject::doUpdate()
 {
     update();
 }
-
-
-QVariant MpvObject::getThumbnailFile(const QString &name) const
-{
-    QProcess process;
-    process.start("youtube-dl --get-thumbnail " + name);
-    process.waitForFinished(-1);
-    return process.readAllStandardOutput();
-
-}
-
-
-
 
 
 QVariant MpvObject::getProperty(const QString &name) const
