@@ -32,4 +32,4 @@ export UPD_INFO="gh-releases-zsync|NamedKitten|KittehPlayer|continuous|KittehPla
 export CONDA_PACKAGES=youtube-dl
 #ln -s ../conda/bin/youtube-dl appdir/usr/bin/youtube-dl
 #sudo wget https://yt-dl.org/downloads/latest/youtube-dl -O appdir/usr/bin/youtube-dl
-./linuxdeploy-x86_64.AppImage --appdir appdir --output appimage -v 3
+./linuxdeploy-x86_64.AppImage --appdir appdir --plugin conda --plugin qt --output appimage -v 3
