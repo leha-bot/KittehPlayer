@@ -221,54 +221,30 @@ Window {
             titleBackground.visible = true
         }
 
+        FileDialog {
+            id: fileDialog
+            title: "Please choose a file"
+            folder: shortcuts.home
+            onAccepted: {
+                renderer.command(["loadfile", String(fileDialog.fileUrl)])
+                fileDialog.close()
+            }
+            onRejected: {
+                fileDialog.close()
+            }
+        }
+
         Dialog {
             id: loadDialog
             title: "URL / File Path"
-            FileDialog {
-                id: fileDialog
-                title: "Please choose a file"
-                folder: shortcuts.home
-                onAccepted: {
-                    renderer.command(["loadfile", String(fileDialog.fileUrl)])
-                    loadDialog.close()
-                }
-                onRejected: {
-                    fileDialog.close()
-                }
-            }
-            contentItem: Rectangle {
-                implicitWidth: 150
-                implicitHeight: 200
-                anchors.fill: parent
-                TextField {
-                    id: pathText
-                    placeholderText: qsTr("URL / File Path")
-                }
-                Button {
-                    id: fileChooserButton
-                    flat: false
-                    anchors.top: pathText.bottom;
-                    text: "File Chooser"
-                    onClicked: fileDialog.open()
-                }
-                Button {
-                    flat: false
-                    id: loadOKButton
-                    anchors.top: fileChooserButton.bottom;
-                    text: "OK"
-                    onClicked: {
-                        renderer.command(["loadfile", pathText.text])
-                        loadDialog.close()
-                    }
-                }
-                Button {
-                    flat: false
-                    anchors.top: loadOKButton.bottom;
-                    text: "Cancel"
-                    onClicked: {
-                        loadDialog.close()
-                    }
-                }
+            standardButtons: StandardButton.Cancel | StandardButton.Open
+            onAccepted: {
+               renderer.command(["loadfile", pathText.text])
+               pathText.text = ""
+	    }
+            TextField {
+                id: pathText
+                placeholderText: qsTr("URL / File Path")
             }
         }
 
@@ -303,7 +279,7 @@ Window {
                 updateControls()
             }
             onDoubleClicked: {
-                loadDialog.open()
+                fileDialog.open()
             }
             Timer {
                 id: mouseAreaPlayerTimer
@@ -727,8 +703,6 @@ Window {
                     color: "transparent"
                 }
             }
-
-            //}
         }
 
         Item {
