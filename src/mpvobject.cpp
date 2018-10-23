@@ -138,7 +138,8 @@ MpvObject::MpvObject(QQuickItem * parent)
     mpv_set_option_string(mpv, "config", "yes");
 
     mpv_set_option_string(mpv, "sub-color", "0.0/0.0/0.0/0.0");
-    mpv_set_option_string(mpv, "sub-scale", "0");
+    mpv_set_option_string(mpv, "sub-border-color", "0.0/0.0/0.0/0.0");
+
 
 
 

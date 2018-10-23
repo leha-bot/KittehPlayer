@@ -7,12 +7,18 @@ import player 1.0
 
 import "codes.js" as LanguageCodes
 
-Window {
+ApplicationWindow {
     id: mainWindow
     title: titleLabel.text
     visible: true
     width: 720
     height: 480
+
+    FontLoader {
+        id: notoFont
+        source: "fonts/NotoSans.ttf"
+    }   
+
 
     property int lastScreenVisibility
 
@@ -130,11 +136,6 @@ Window {
         id: player
         anchors.fill: parent
 
-        FontLoader {
-            id: notoFont
-            source: "fonts/NotoSans.ttf"
-        }
-
         Timer {
             id: initTimer
             interval: 2000
@@ -213,6 +214,7 @@ Window {
                 controlsBackground.visible = false
                 titleBar.visible = false
                 titleBackground.visible = false
+                menuBar.visible = false
             }
         }
 
@@ -224,6 +226,7 @@ Window {
                 controlsBackground.visible = true
                 titleBar.visible = true
                 titleBackground.visible = true
+                menuBar.visible = true
             }
         }
 
@@ -300,10 +303,69 @@ Window {
             }
         }
 
+
+    MenuBar {
+        id: menuBar
+        contentWidth: parent.width
+        delegate: MenuBarItem {
+            id: menuBarItem
+
+            contentItem: Text {
+                text: menuBarItem.text
+                font.family: notoFont.name
+                font.pixelSize: 12
+                renderType: Text.NativeRendering
+                opacity: 1
+                color: menuBarItem.highlighted ? "#5a50da" : "white"
+                horizontalAlignment: Text.AlignLeft
+                verticalAlignment: Text.AlignVCenter
+                elide: Text.ElideRight
+            }
+
+            background: Rectangle {
+                implicitWidth: 14
+                implicitHeight: 14
+                opacity: 1
+                color: menuBarItem.highlighted ? "#c0c0f0" : "transparent"
+            }
+        }
+
+        background: Rectangle {
+            implicitWidth: parent.width
+            implicitHeight: 14
+            color: "black"
+            opacity: 0.6
+        }
+
+        Menu {
+            title: "File"
+            MenuItem {
+                text: "Open File"
+                onTriggered: fileDialog.open()
+            }
+            MenuItem {
+                text: "Open URI/URL"
+                onTriggered: loadDialog.open()
+            }
+            MenuItem {
+                text: "Exit"
+                onTriggered: Qt.quit()
+            }
+
+        }
+        /*Menu {
+            title: "Help"
+            MenuItem {
+                text: "About"
+                onTriggered: aboutDialog.open()
+            }
+        }*/
+    }
+
         Rectangle {
             id: titleBackground
             height: titleBar.height
-            anchors.top: parent.top
+            anchors.top: titleBar.top
             anchors.left: parent.left
             anchors.right: parent.right
             Layout.fillWidth: true
@@ -319,7 +381,7 @@ Window {
             anchors.rightMargin: parent.width / 128
             anchors.left: parent.left
             anchors.leftMargin: parent.width / 128
-            anchors.top: parent.top
+            anchors.top: menuBar.bottom
 
             visible: true
             color: "transparent"
