@@ -2,12 +2,9 @@
 set -x
 
 export OLDDIR=`pwd`
-#export PATH="/usr/lib/ccache:/usr/lib/ccache/bin:$PATH"
+export PATH="/usr/lib/ccache:/usr/lib/ccache/bin:$PATH"
 
-#export CFLAGS="-Os"
-
-ccache -C
-
+export CFLAGS="-Os"
 
 rm -rf mpv-build
 git clone --depth 1 https://github.com/mpv-player/mpv-build mpv-build
