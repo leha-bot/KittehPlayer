@@ -23,7 +23,7 @@ echo "--disable-programs --disable-runtime-cpudetect --enable-small" >> ffmpeg_o
 echo "--enable-libmpv-shared --prefix=/usr" > mpv_options
 echo "--disable-caca --disable-wayland --disable-gl-wayland --disable-libarchive  --disable-zlib  --disable-tv --disable-debug-build --disable-manpage-build --disable-vapoursynth --disable-libsmbclient --disable-wayland" >> mpv_options
 
-sudo ./build -j`nproc`
+sudo ./rebuild -j`nproc`
 sudo ./install
 ccache -s
 cat libass*/config.log
