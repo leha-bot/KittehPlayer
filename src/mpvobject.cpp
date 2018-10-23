@@ -124,7 +124,7 @@ MpvObject::MpvObject(QQuickItem * parent)
     //mpv_set_option_string(mpv, "ytdl", "yes");
     mpv_set_option_string(mpv, "vo", "libmpv");
 
-    mpv_set_option_string(mpv, "slang", "en");
+    /*mpv_set_option_string(mpv, "slang", "en");
     mpv_set_option_string(mpv, "sub-font", "Noto Sans");
     mpv_set_option_string(mpv, "sub-ass-override", "force");
     mpv_set_option_string(mpv, "sub-ass", "off");
@@ -133,7 +133,9 @@ MpvObject::MpvObject(QQuickItem * parent)
     mpv_set_option_string(mpv, "sub-scale-by-window", "on");
     mpv_set_option_string(mpv, "sub-scale-with-window", "on");
 
-    mpv_set_option_string(mpv, "sub-back-color", "#C0080808");
+    mpv_set_option_string(mpv, "sub-back-color", "#C0080808");*/
+    mpv_set_option_string(mpv, "sub-color", "0.0/0.0/0.0/0.0");
+    mpv_set_option_string(mpv, "sub-scale", "0");
 
 
 
@@ -143,7 +145,7 @@ MpvObject::MpvObject(QQuickItem * parent)
 
         mpv_observe_property(mpv, 0, "duration", MPV_FORMAT_DOUBLE);
         mpv_observe_property(mpv, 0, "media-title", MPV_FORMAT_STRING);
-
+        mpv_observe_property(mpv, 0, "sub-text", MPV_FORMAT_STRING);
         mpv_observe_property(mpv, 0, "time-pos", MPV_FORMAT_DOUBLE);
 
         mpv_set_wakeup_callback(mpv, wakeup, this);
@@ -236,6 +238,8 @@ void MpvObject::handle_mpv_event(mpv_event *event)
             if (prop->format == MPV_FORMAT_STRING) {
                 QMetaObject::invokeMethod(this,"setTitle");
             }
+        } else if (strcmp(prop->name, "sub-text") == 0) {
+            QMetaObject::invokeMethod(this,"setSubtitles");
         }
         break;
     }

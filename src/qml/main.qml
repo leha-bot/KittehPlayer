@@ -61,6 +61,7 @@ Window {
     }
 
     function updateControls() {
+        keybinds.focus = true
         updatePrev()
         updatePlayPauseIcon()
         updateVolume()
@@ -201,8 +202,12 @@ Window {
             titleLabel.text = player.getProperty("media-title")
         }
 
+        function setSubtitles() {
+            nativeSubs.text = player.getProperty("sub-text")
+        }
+
         function hideControls() {
-	        if ( (!subtitlesMenu.visible) || (!settingsMenu.visible) ) {
+	        if ( ! (subtitlesMenu.visible || settingsMenu.visible) ) {
                 player.setOption("sub-margin-y", "22")
                 controlsBar.visible = false
                 controlsBackground.visible = false
@@ -212,13 +217,14 @@ Window {
         }
 
         function showControls() {
-            updateControls()
-            player.setOption("sub-margin-y",
-                               String(controlsBar.height + progressBar.height))
-            controlsBar.visible = true
-            controlsBackground.visible = true
-            titleBar.visible = true
-            titleBackground.visible = true
+            if (! controlsBar.visible) {
+                updateControls()
+                //player.setOption("sub-margin-y", String(controlsBar.height + progressBar.height))
+                controlsBar.visible = true
+                controlsBackground.visible = true
+                titleBar.visible = true
+                titleBackground.visible = true
+            }
         }
 
         FileDialog {
@@ -274,6 +280,7 @@ Window {
             anchors.top: titleBar.bottom
             anchors.topMargin: 0
             hoverEnabled: true
+            cursorShape: controlsBar.visible ? Qt.ArrowCursor : Qt.BlankCursor
             onClicked: {
                 player.command(["cycle", "pause"])
                 updateControls()
@@ -340,8 +347,8 @@ Window {
 
         Rectangle {
             id: controlsBackground
-            height: controlsBar.height + (progressBar.topPadding * 2)
-                    - (progressBackground.height * 2)
+            height: controlsBar.visible ? controlsBar.height + (progressBar.topPadding * 2)
+                    - (progressBackground.height * 2) : 0
             anchors.bottom: parent.bottom
             anchors.left: parent.left
             anchors.right: parent.right
@@ -351,9 +358,41 @@ Window {
             opacity: 0.6
         }
 
+    Rectangle {
+        id: nativeSubtitles
+        height: nativeSubs.font.pixelSize + 4
+        visible: nativeSubs.text == "" ? false : true
+        anchors.left: controlsBar.left
+        anchors.right: controlsBar.right
+        anchors.bottom: controlsBackground.top
+        
+        radius: 5
+        color: "transparent"
+
+        Label {
+            id: nativeSubs
+            width: parent.width
+            text: ""
+            color: "white"
+            font.family: notoFont.name
+            font.pixelSize: 24
+            renderType: Text.NativeRendering
+            horizontalAlignment: Text.AlignHCenter
+            anchors.bottom: parent.top
+            opacity: 1
+            wrapMode: Text.WrapAtWordBoundaryOrAnywhere
+
+            background: Rectangle {
+                color: Qt.rgba(0, 0, 0, 0.6)
+                anchors.left: parent.left
+                anchors.right: parent.right
+            }
+        }
+    }
+
         Rectangle {
             id: controlsBar
-            height: Screen.height / 24
+            height: controlsBar.visible ? Screen.height / 24 : 0
             anchors.right: parent.right
             anchors.rightMargin: parent.width / 128
             anchors.left: parent.left
@@ -395,6 +434,7 @@ Window {
                     }
                 }
             }
+
             Rectangle {
                 id: subtitlesMenuBackground
                 anchors.fill: subtitlesMenu
@@ -737,6 +777,7 @@ Window {
         }
 
         Item {
+            id: keybinds
             anchors.fill: parent
             focus: true
             Keys.onPressed: {
@@ -746,6 +787,8 @@ Window {
                     player.command(["seek", "-10"])
                 } else if (event.key == Qt.Key_L) {
                     player.command(["seek", "10"])
+                } else if (event.key == Qt.Key_I) {
+                    player.command(["script-binding", "stats/display-stats-toggle"])
                 }
                 updateControls()
             }
