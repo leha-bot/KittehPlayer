@@ -26,5 +26,6 @@ echo "--disable-caca --disable-wayland --disable-gl-wayland --disable-libarchive
 sudo ./build -j`nproc`
 sudo ./install
 ccache -s
+cat libass*/config.log
 
 cd $OLDDIR
