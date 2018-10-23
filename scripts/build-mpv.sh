@@ -2,11 +2,11 @@
 set -x
 
 export OLDDIR=`pwd`
-export PATH="/usr/lib/ccache:/usr/lib/ccache/bin:$PATH"
+#export PATH="/usr/lib/ccache:/usr/lib/ccache/bin:$PATH"
 
-export CFLAGS="-Os"
+#export CFLAGS="-Os"
 
-ccache -C12
+ccache -C
 
 
 rm -rf mpv-build
