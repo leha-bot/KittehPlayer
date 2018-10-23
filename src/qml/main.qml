@@ -202,7 +202,7 @@ Window {
         }
 
         function hideControls() {
-	        if (! subtitlesMenu.visible) {
+	        if ( (!subtitlesMenu.visible) || (!settingsMenu.visible) ) {
                 player.setOption("sub-margin-y", "22")
                 controlsBar.visible = false
                 controlsBackground.visible = false
@@ -277,9 +277,6 @@ Window {
             onClicked: {
                 player.command(["cycle", "pause"])
                 updateControls()
-            }
-            onDoubleClicked: {
-                fileDialog.open()
             }
             Timer {
                 id: mouseAreaPlayerTimer
@@ -367,6 +364,38 @@ Window {
             color: "transparent"
 
             Rectangle {
+                id: settingsMenuBackground
+                anchors.fill: settingsMenu
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                visible: false
+                color: "black"
+                opacity: 0.6
+                radius: 5
+            }
+
+            Rectangle {
+                id: settingsMenu
+                color: "transparent"
+                width: childrenRect.width
+                height: childrenRect.height
+                visible: false
+                anchors.right: settingsButton.right
+                anchors.bottom: progressBar.top
+                radius: 5
+
+                ColumnLayout {
+                    Button {
+                        text: "Open File"
+                        onClicked: fileDialog.open()
+                    }
+                    Button {
+                        text: "Enter Path"
+                        onClicked: loadDialog.open()
+                    }
+                }
+            }
+            Rectangle {
                 id: subtitlesMenuBackground
                 anchors.fill: subtitlesMenu
                 Layout.fillWidth: true
@@ -376,6 +405,7 @@ Window {
                 opacity: 0.6
                 radius: 5
             }
+
 
             Rectangle {
                 id: subtitlesMenu
@@ -678,7 +708,8 @@ Window {
                 anchors.bottom: parent.bottom
                 display: AbstractButton.IconOnly
                 onClicked: {
-                    loadDialog.open()
+                    settingsMenu.visible = !settingsMenu.visible
+                    settingsMenuBackground.visible = !settingsMenuBackground.visible
                 }
                 background: Rectangle {
                     color: "transparent"
