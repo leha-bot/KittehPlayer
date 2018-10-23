@@ -26,7 +26,7 @@ Window {
     }
 
     function updatePlayPauseIcon() {
-        var paused = renderer.getProperty("pause")
+        var paused = player.getProperty("pause")
         if (paused) {
             playPauseButton.icon.source = "qrc:/player/icons/play.svg"
         } else {
@@ -35,8 +35,8 @@ Window {
     }
 
     function updateVolume() {
-        var muted = renderer.getProperty("mute")
-        var volume = renderer.getProperty("volume")
+        var muted = player.getProperty("mute")
+        var volume = player.getProperty("volume")
 
         if (muted || volume === 0) {
             volumeButton.icon.source = "qrc:/player/icons/volume-mute.svg"
@@ -50,7 +50,7 @@ Window {
     }
 
     function updatePrev() {
-        var playlist_pos = renderer.getProperty("playlist-pos")
+        var playlist_pos = player.getProperty("playlist-pos")
         if (playlist_pos > 0) {
             playlistPrevButton.visible = true
             playlistPrevButton.width = playPauseButton.width
@@ -67,7 +67,7 @@ Window {
     }
 
     function updatePlayPause() {
-        renderer.command(["cycle", "pause"])
+        player.command(["cycle", "pause"])
         updatePlayPauseIcon()
     }
 
@@ -76,32 +76,32 @@ Window {
     }
 
     function tracksMenuUpdate() {
-        var tracks = renderer.getProperty("track-list/count")
+        var tracks = player.getProperty("track-list/count")
         var track = 0
         subModel.clear()
         audioModel.clear()
         vidModel.clear()
 
-        var aid = renderer.getProperty("aid")
-        var sid = renderer.getProperty("sid")
-        var vid = renderer.getProperty("vid")
+        var aid = player.getProperty("aid")
+        var sid = player.getProperty("sid")
+        var vid = player.getProperty("vid")
 
         console.log("Updating Track Menu, Total Tracks: " + tracks)
         for (track = 0; track <= tracks; track++) {
-            var trackID = renderer.getProperty("track-list/" + track + "/id")
-            var trackType = renderer.getProperty(
+            var trackID = player.getProperty("track-list/" + track + "/id")
+            var trackType = player.getProperty(
                         "track-list/" + track + "/type")
             var trackLang = LanguageCodes.localeCodeToEnglish(
-                        String(renderer.getProperty(
+                        String(player.getProperty(
                                    "track-list/" + track + "/lang")))
-            var trackTitle = renderer.getProperty(
+            var trackTitle = player.getProperty(
                         "track-list/" + track + "/title")
             if (trackType == "sub") {
                 subModel.append({
                                     key: trackLang,
                                     value: trackID
                                 })
-                if (renderer.getProperty("track-list/" + track + "/selected")) {
+                if (player.getProperty("track-list/" + track + "/selected")) {
                     subList.currentIndex = subList.count
                 }
             } else if (trackType == "audio") {
@@ -110,7 +110,7 @@ Window {
                                            + trackLang,
                                       value: trackID
                                   })
-                if (renderer.getProperty("track-list/" + track + "/selected")) {
+                if (player.getProperty("track-list/" + track + "/selected")) {
                     audioList.currentIndex = audioList.count
                 }
             } else if (trackType == "video") {
@@ -118,7 +118,7 @@ Window {
                                     key: "Video " + trackID,
                                     value: trackID
                                 })
-                if (renderer.getProperty("track-list/" + track + "/selected")) {
+                if (player.getProperty("track-list/" + track + "/selected")) {
                     vidList.currentIndex = vidList.count
                 }
             }
@@ -126,7 +126,7 @@ Window {
     }
 
     MpvObject {
-        id: renderer
+        id: player
         anchors.fill: parent
 
         FontLoader {
@@ -140,7 +140,7 @@ Window {
             running: false
 	    repeat: false
             onTriggered: {
-		renderer.startPlayer()
+		player.startPlayer()
             }
         }
         Component.onCompleted: { initTimer.start() }
@@ -149,7 +149,7 @@ Window {
             var args = Qt.application.arguments
             var len = Qt.application.arguments.length
             var argNo = 0
-            renderer.setOption("ytdl-format", "bestvideo[width<=" + Screen.width
+            player.setOption("ytdl-format", "bestvideo[width<=" + Screen.width
                                + "][height<=" + Screen.height + "]+bestaudio")
             if (len > 1) {
                 for (argNo = 1; argNo < len; argNo++) {
@@ -165,11 +165,11 @@ Window {
                                 if (splitArg[1].length == 0) {
                                     splitArg[1] = "true"
                                 }
-                                renderer.setOption(splitArg[0], splitArg[1])
+                                player.setOption(splitArg[0], splitArg[1])
                             }
                         }
                     } else { 
-                        renderer.command(["loadfile", argument])
+                        player.command(["loadfile", argument])
                     }
                 }
             }
@@ -198,12 +198,12 @@ Window {
         }
 
         function setTitle() {
-            titleLabel.text = renderer.getProperty("media-title")
+            titleLabel.text = player.getProperty("media-title")
         }
 
         function hideControls() {
 	        if (! subtitlesMenu.visible) {
-                renderer.setOption("sub-margin-y", "22")
+                player.setOption("sub-margin-y", "22")
                 controlsBar.visible = false
                 controlsBackground.visible = false
                 titleBar.visible = false
@@ -213,7 +213,7 @@ Window {
 
         function showControls() {
             updateControls()
-            renderer.setOption("sub-margin-y",
+            player.setOption("sub-margin-y",
                                String(controlsBar.height + progressBar.height))
             controlsBar.visible = true
             controlsBackground.visible = true
@@ -226,7 +226,7 @@ Window {
             title: "Please choose a file"
             folder: shortcuts.home
             onAccepted: {
-                renderer.command(["loadfile", String(fileDialog.fileUrl)])
+                player.command(["loadfile", String(fileDialog.fileUrl)])
                 fileDialog.close()
             }
             onRejected: {
@@ -239,7 +239,7 @@ Window {
             title: "URL / File Path"
             standardButtons: StandardButton.Cancel | StandardButton.Open
             onAccepted: {
-               renderer.command(["loadfile", pathText.text])
+               player.command(["loadfile", pathText.text])
                pathText.text = ""
 	    }
             TextField {
@@ -275,7 +275,7 @@ Window {
             anchors.topMargin: 0
             hoverEnabled: true
             onClicked: {
-                renderer.command(["cycle", "pause"])
+                player.command(["cycle", "pause"])
                 updateControls()
             }
             onDoubleClicked: {
@@ -287,11 +287,11 @@ Window {
                 running: false
                 repeat: false
                 onTriggered: {
-                    renderer.hideControls()
+                    player.hideControls()
                 }
             }
             onPositionChanged: {
-                renderer.showControls()
+                player.showControls()
                 mouseAreaPlayerTimer.restart()
             }
         }
@@ -407,7 +407,7 @@ Window {
                         id: audioModel
                     }
                     onActivated: {
-                        renderer.command(["set", "aid", String(
+                        player.command(["set", "aid", String(
                                               audioModel.get(index).value)])
                     }
                     opacity: 1
@@ -433,7 +433,7 @@ Window {
                         id: subModel
                     }
                     onActivated: {
-                        renderer.command(["set", "sid", String(
+                        player.command(["set", "sid", String(
                                               subModel.get(index).value)])
                     }
                     opacity: 1
@@ -459,7 +459,7 @@ Window {
                         id: vidModel
                     }
                     onActivated: {
-                        renderer.command(["set", "vid", String(
+                        player.command(["set", "vid", String(
                                               vidModel.get(index).value)])
                     }
                     opacity: 1
@@ -480,7 +480,7 @@ Window {
                 bottomPadding: 0
 
                 onMoved: {
-                    renderer.command(["seek", progressBar.value, "absolute"])
+                    player.command(["seek", progressBar.value, "absolute"])
                 }
 
                 background: Rectangle {
@@ -524,7 +524,7 @@ Window {
                 visible: false
                 width: 0
                 onClicked: {
-                    renderer.command(["playlist-prev"])
+                    player.command(["playlist-prev"])
                     updatePrev()
                 }
                 background: Rectangle {
@@ -559,7 +559,7 @@ Window {
                 anchors.bottom: parent.bottom
                 anchors.left: playPauseButton.right
                 onClicked: {
-                    renderer.command(["playlist-next", "force"])
+                    player.command(["playlist-next", "force"])
                 }
                 background: Rectangle {
                     color: "transparent"
@@ -576,7 +576,7 @@ Window {
                 anchors.bottom: parent.bottom
                 anchors.left: playlistNextButton.right
                 onClicked: {
-                    renderer.command(["cycle", "mute"])
+                    player.command(["cycle", "mute"])
                     updateVolume()
                 }
                 background: Rectangle {
@@ -602,7 +602,7 @@ Window {
                 anchors.top: parent.top
                 anchors.bottom: parent.bottom
                 onMoved: {
-                    renderer.command(["set", "volume", Math.round(
+                    player.command(["set", "volume", Math.round(
                                           volumeBar.value).toString()])
                     updateVolume()
                 }
@@ -710,11 +710,11 @@ Window {
             focus: true
             Keys.onPressed: {
                 if (event.key == Qt.Key_K || event.key == Qt.Key_Space) {
-                    renderer.command(["cycle", "pause"])
+                    player.command(["cycle", "pause"])
                 } else if (event.key == Qt.Key_J) {
-                    renderer.command(["seek", "-10"])
+                    player.command(["seek", "-10"])
                 } else if (event.key == Qt.Key_L) {
-                    renderer.command(["seek", "10"])
+                    player.command(["seek", "10"])
                 }
                 updateControls()
             }
