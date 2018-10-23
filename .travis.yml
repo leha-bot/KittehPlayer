@@ -1,19 +1,33 @@
+
 matrix:
   include:
     - env: PLATFORM='linux64'
       os: linux
       dist: xenial
-      sudo: required
       compiler: clang
       language: cpp
+      sudo: require
       cache:
         ccache: true
         directories:
           - $HOME/.ccache
           - $HOME/.cache/apt
+      before_install:
+        - mkdir -p $HOME/.cache/apt/partial
+        - sudo rm -rf /var/cache/apt/archives
+        - sudo ln -s $HOME/.cache/apt /var/cache/apt/archives
+        - sudo add-apt-repository ppa:beineri/opt-qt-5.11.1-xenial -y
+        - sudo apt-get update 
+      install:
+        - sudo apt-get -y install libjack0 libjack-dev nasm ccache qt511-meta-minimal qt511quickcontrols qt511quickcontrols2 qt511imageformats qt511svg libgl1-mesa-dev checkinstall
+        - sudo apt-get build-dep libmpv1
+        - source /opt/qt*/bin/qt*-env.sh
+      script:
+        - bash scripts/build-mpv.sh
+        - bash scripts/makeappimage.sh
 
-script:
-  - bash scripts/ci-${PLATFORM}.sh
+after_success:
+  - bash scripts/upload.sh
   
 branches:
   except:
