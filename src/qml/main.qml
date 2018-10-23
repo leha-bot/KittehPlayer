@@ -241,7 +241,7 @@ Window {
             onAccepted: {
                player.command(["loadfile", pathText.text])
                pathText.text = ""
-	    }
+	        }
             TextField {
                 id: pathText
                 placeholderText: qsTr("URL / File Path")
