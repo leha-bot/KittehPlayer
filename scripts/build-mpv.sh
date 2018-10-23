@@ -6,6 +6,7 @@ export PATH="/usr/lib/ccache:/usr/lib/ccache/bin:$PATH"
 
 export CFLAGS="-fPIC -Os"
 
+ccache -C
 
 export V=0 VERBOSE=0
 
