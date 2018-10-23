@@ -34,6 +34,7 @@ int main( int argc, char *argv[] )
             if(!updater.waitForStarted())
                 qDebug() << "Failed to start updater.";
                 qDebug() << updater.errorString();
+            updater.waitForFinished();
             qDebug() << program;
             exit(0);
         }
