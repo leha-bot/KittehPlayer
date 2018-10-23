@@ -121,7 +121,7 @@ MpvObject::MpvObject(QQuickItem * parent)
     mpv_set_option_string(mpv, "msg-level", "all=v");
 
     // Fix?
-    //mpv_set_option_string(mpv, "ytdl", "yes");
+    mpv_set_option_string(mpv, "ytdl", "yes");
     mpv_set_option_string(mpv, "vo", "libmpv");
 
     /*mpv_set_option_string(mpv, "slang", "en");
