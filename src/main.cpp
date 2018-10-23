@@ -27,7 +27,7 @@ int main( int argc, char *argv[] )
 
     for (int i = 1; i < argc; ++i) {
         if (!qstrcmp(argv[i], "--update")) {
-            QString program = QProcessEnvironment::systemEnvironment().value("APPDIR", "/usr/bin") + "/appimageupdatetool";
+            QString program = QProcessEnvironment::systemEnvironment().value("APPDIR", "") +  "/usr/bin/appimageupdatetool";
             QProcess updater;
             updater.setProcessChannelMode(QProcess::ForwardedChannels);
             updater.start(program, QStringList() << QProcessEnvironment::systemEnvironment().value("APPIMAGE", ""));
