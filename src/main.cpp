@@ -33,6 +33,7 @@ int main( int argc, char *argv[] )
             updater.start(program, QStringList() << QProcessEnvironment::systemEnvironment().value("APPIMAGE", ""));
             if(!updater.waitForStarted())
                 qDebug() << "Failed to start updater.";
+                qDebug() << updater.errorString();
             qDebug() << program;
             exit(0);
         }
