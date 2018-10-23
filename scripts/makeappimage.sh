@@ -21,7 +21,16 @@ if [ "$ARCH" == "" ]; then
     ARCH="x86_64"
 fi
 
-wget "https://github.com/AppImage/AppImageUpdate/releases/download/continuous/appimageupdatetool-382-b61bee3-x86_64.AppImage" -O appdir/usr/bin/appimageupdatetool
+git clone https://github.com/AppImage/AppImageUpdate.git
+cd AppImageUpdate
+git submodule update --init --recursive
+cmake . -DCMAKE_INSTALL_PREFIX=/usr
+make 
+sudo make install
+cd ..
+
+cp /usr/bin/appimageupdatetool appdir/usr/bin
+
 cp -f /usr/lib/*/libjack.so.0 appdir/usr/lib
 
 export UPD_INFO="gh-releases-zsync|NamedKitten|KittehPlayer|continuous|KittehPlayer-$ARCH.AppImage.zsync"
