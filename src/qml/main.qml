@@ -323,8 +323,8 @@ ApplicationWindow {
             }
 
             background: Rectangle {
-                implicitWidth: 14
-                implicitHeight: 14
+                implicitWidth: 10
+                implicitHeight: 10
                 opacity: 1
                 color: menuBarItem.highlighted ? "#c0c0f0" : "transparent"
             }
@@ -332,7 +332,7 @@ ApplicationWindow {
 
         background: Rectangle {
             implicitWidth: parent.width
-            implicitHeight: 14
+            implicitHeight: 10
             color: "black"
             opacity: 0.6
         }
@@ -773,9 +773,9 @@ ApplicationWindow {
                 anchors.left: volumeBar.right
                 anchors.top: parent.top
                 anchors.bottom: parent.bottom
-                padding: 5
+                padding: 2
                 font.family: notoFont.name
-                font.pixelSize: 12
+                font.pixelSize: 14
                 verticalAlignment: Text.AlignVCenter
                 renderType: Text.NativeRendering
             }

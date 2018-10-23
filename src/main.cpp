@@ -40,6 +40,11 @@ int main( int argc, char *argv[] )
         }
     }
     
+    QProcess dpms;
+    dpms.start("xset", QStringList() << "-dpms");
+
+
+    
 
     setenv("QT_QUICK_CONTROLS_STYLE","Desktop",1);
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
