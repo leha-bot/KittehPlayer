@@ -6,20 +6,18 @@ export PATH="/usr/lib/ccache:/usr/lib/ccache/bin:$PATH"
 
 export CFLAGS="-Os"
 
-ccache -C
+ccache -C12
 
-#rm -rf mpv-build
+
+rm -rf mpv-build
 git clone --depth 1 https://github.com/mpv-player/mpv-build mpv-build
 cd mpv-build
 
 export MPVDIR=`pwd`
 
 
-#rm -rf ffmpeg mpv libass
-git clone --depth 1 https://github.com/FFmpeg/FFmpeg.git ffmpeg
-git clone --depth 1 https://github.com/mpv-player/mpv.git mpv
-git clone --depth 1 https://github.com/libass/libass.git libass
-#--enable-libaom
+rm -rf ffmpeg mpv libass
+
 echo ' ' > ffmpeg_options
 echo "--disable-programs --disable-runtime-cpudetect --enable-small" >> ffmpeg_options
 echo "--enable-libmpv-shared --prefix=/usr" > mpv_options
