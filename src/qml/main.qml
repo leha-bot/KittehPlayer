@@ -317,15 +317,17 @@ ApplicationWindow {
         Settings {
             id: keybinds
             category: "Keybinds"
-            property string PlayPause: "K"
-            property string Forward10: "L"
-            property string Rewind10: "J"
-            property string OpenFile: "Ctrl+O"
-            property string OpenURI: "Ctrl+Shift+O"
-            property string Quit: "Ctrl+Q"
-            property string Fullscreen: "F"
-            property string Tracks: "Ctrl+T"
-            property string StatsForNerds: "I"
+            property string playPause: "K"
+            property string forward10: "L"
+            property string rewind10: "J"
+            property string openFile: "Ctrl+O"
+            property string openURI: "Ctrl+Shift+O"
+            property string quit: "Ctrl+Q"
+            property string fullscreen: "F"
+            property string tracks: "Ctrl+T"
+            property string statsForNerds: "I"
+            property string forwardFrame: "Period"
+            property string backwardFrame: "Comma"
         }
 
     MenuBar {
@@ -378,18 +380,18 @@ ApplicationWindow {
             Action {
                 text: "Open File"
                 onTriggered: fileDialog.open()
-                shortcut: keybinds.OpenFile
+                shortcut: keybinds.openFile
             }
             Action {
                 text: "Open URI/URL"
                 onTriggered: loadDialog.open()
-                shortcut: keybinds.OpenURI
+                shortcut: keybinds.openURI
 
             }
             Action {
                 text: "Exit"
                 onTriggered: Qt.quit()
-                shortcut: keybinds.Quit
+                shortcut: keybinds.quit
             }
         }
         
@@ -411,7 +413,7 @@ ApplicationWindow {
                     player.command(["cycle", "pause"])
                     updateControls()
                 }
-                shortcut: String(keybinds.PlayPause)
+                shortcut: String(keybinds.playPause)
             }
             Action {
                 text: "Rewind 10s"
@@ -419,7 +421,7 @@ ApplicationWindow {
                     player.command(["seek", "-10"])
                     updateControls()
                 }
-                shortcut: keybinds.Rewind10
+                shortcut: keybinds.rewind10
             }
             Action {
                 text: "Forward 10s"
@@ -427,7 +429,23 @@ ApplicationWindow {
                     player.command(["seek", "10"])
                     updateControls()
                 }
-                shortcut: keybinds.Forward10
+                shortcut: keybinds.forward10
+            }
+            Action {
+                text: "Forward Frame"
+                onTriggered: {
+                    player.command(["frame-step"])
+                    updateControls()
+                }
+                shortcut: keybinds.forwardFrame
+            }
+            Action {
+                text: "Back Frame"
+                onTriggered: {
+                    player.command(["frame-back-step"])
+                    updateControls()
+                }
+                shortcut: keybinds.backwardFrame
             }
         }
 
@@ -450,7 +468,7 @@ ApplicationWindow {
                     subtitlesMenu.visible = !subtitlesMenu.visible
                     subtitlesMenuBackground.visible = !subtitlesMenuBackground.visible
                 }
-                shortcut: keybinds.Tracks
+                shortcut: keybinds.tracks
             }
 
             Action {
@@ -458,7 +476,7 @@ ApplicationWindow {
                 onTriggered: {
                     toggleFullscreen()
                 }
-                shortcut: keybinds.Fullscreen
+                shortcut: keybinds.fullscreen
             }
 
             Action {
@@ -466,7 +484,7 @@ ApplicationWindow {
                 onTriggered: {
                     player.command(["script-binding", "stats/display-stats-toggle"])
                 }
-                shortcut: keybinds.StatsForNerds
+                shortcut: keybinds.statsForNerds
             }
         }
 
