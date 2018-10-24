@@ -24,6 +24,9 @@
 int main( int argc, char *argv[] )
 {
     QApplication app(argc, argv);
+    app.setOrganizationName("KittehPlayer");
+    app.setOrganizationDomain("namedkitten.pw");
+    app.setApplicationName("KittehPlayer");
 
     for (int i = 1; i < argc; ++i) {
         if (!qstrcmp(argv[i], "--update")) {
