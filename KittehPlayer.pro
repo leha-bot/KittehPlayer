@@ -6,6 +6,7 @@ QT += qml quickcontrols2 widgets
 SOURCES += src/main.cpp src/mpvobject.cpp
 
 CONFIG += release
+CONFIG+=qtquickcompiler
 QT_CONFIG -= no-pkg-config
 CONFIG += link_pkgconfig
 PKGCONFIG += mpv

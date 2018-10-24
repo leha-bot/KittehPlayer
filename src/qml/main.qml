@@ -482,7 +482,7 @@ ApplicationWindow {
         Menu {
             id: tracksMenuBarItem
             title: "Tracks"
-            width: 100
+            width: 150
             background: Rectangle {
                 implicitWidth: parent.width
                 implicitHeight: 10
