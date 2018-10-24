@@ -320,6 +320,8 @@ ApplicationWindow {
             property string playPause: "K"
             property string forward10: "L"
             property string rewind10: "J"
+            property string forward5: "Right"
+            property string rewind5: "Left"
             property string openFile: "Ctrl+O"
             property string openURI: "Ctrl+Shift+O"
             property string quit: "Ctrl+Q"
@@ -328,6 +330,10 @@ ApplicationWindow {
             property string statsForNerds: "I"
             property string forwardFrame: "."
             property string backwardFrame: ","
+            property string cycleSub: "S"
+            property string cycleSubBackwards: "Shift+S"
+            property string cycleAudio: "A"
+
         }
 
     MenuBar {
@@ -431,6 +437,22 @@ ApplicationWindow {
                 }
                 shortcut: keybinds.forward10
             }
+                        Action {
+                text: "Rewind 5s"
+                onTriggered: {
+                    player.command(["seek", "-5"])
+                    updateControls()
+                }
+                shortcut: keybinds.rewind5
+            }
+            Action {
+                text: "Forward 5s"
+                onTriggered: {
+                    player.command(["seek", "5"])
+                    updateControls()
+                }
+                shortcut: keybinds.forward5
+            }
             Action {
                 text: "Forward Frame"
                 onTriggered: {
@@ -446,6 +468,27 @@ ApplicationWindow {
                     updateControls()
                 }
                 shortcut: keybinds.backwardFrame
+            }
+            Action {
+                text: "Cycle Subs"
+                onTriggered: {
+                    player.command(["cycle", "sub"])
+                }
+                shortcut: keybinds.cycleSub
+            }
+            Action {
+                text: "Cycle Subs Backwards"
+                onTriggered: {
+                    player.command(["cycle", "sub", "down"])
+                }
+                shortcut: keybinds.cycleSubBackwards
+            }
+            Action {
+                text: "Cycle Audio"
+                onTriggered: {
+                    player.command(["cycle", "audio"])
+                }
+                shortcut: keybinds.cycleAudio
             }
         }
 
