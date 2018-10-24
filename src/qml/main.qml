@@ -472,7 +472,7 @@ ApplicationWindow {
         Action { onTriggered: player.skipToNinth(parseInt(shortcut)); shortcut: "7";}
         Action { onTriggered: player.skipToNinth(parseInt(shortcut)); shortcut: "8";}
         Action { onTriggered: player.skipToNinth(parseInt(shortcut)); shortcut: "9";}
-        Action { onTriggered: player.skipToNinth(parseInt(shortcut)); shortcut: "0";)
+        Action { onTriggered: player.skipToNinth(parseInt(shortcut)); shortcut: "0";}
 
     }
 
