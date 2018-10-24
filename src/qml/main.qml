@@ -215,7 +215,7 @@ ApplicationWindow {
         }
 
         function isAnyMenuOpen() {
-            return subtitlesMenu.visible || settingsMenu.visible || fileMenuBarItem.opened || playbackMenuBarItem.opened || viewMenuBarItem.opened
+            return subtitlesMenu.visible || settingsMenu.visible || fileMenuBarItem.opened || playbackMenuBarItem.opened || viewMenuBarItem.opened || tracksMenuBarItem.opened
         }
 
         function hideControls() {
@@ -333,7 +333,8 @@ ApplicationWindow {
             property string cycleSub: "S"
             property string cycleSubBackwards: "Shift+S"
             property string cycleAudio: "A"
-
+            property string cycleVideo: "V"
+            property string cycleVideoAspect: "Shift+A"
         }
 
     MenuBar {
@@ -470,6 +471,35 @@ ApplicationWindow {
                 shortcut: keybinds.backwardFrame
             }
             Action {
+                text: "Switch Aspect Ratio"
+                onTriggered: {
+                    player.command(["cycle-values", "video-aspect", "16:9", "4:3", "2.35:1", "-1"])
+                }
+                shortcut: keybinds.cycleVideoAspect
+            }
+        }
+
+        Menu {
+            id: tracksMenuBarItem
+            title: "Tracks"
+            width: 100
+            background: Rectangle {
+                implicitWidth: parent.width
+                implicitHeight: 10
+                color: "black"
+                opacity: 0.6
+            }
+            delegate: CustomMenuItem { width: 100 }
+            Action {
+                text: "Track Menu"
+                onTriggered: {
+                    tracksMenuUpdate()
+                    subtitlesMenu.visible = !subtitlesMenu.visible
+                    subtitlesMenuBackground.visible = !subtitlesMenuBackground.visible
+                }
+                shortcut: keybinds.tracks
+            }
+            Action {
                 text: "Cycle Subs"
                 onTriggered: {
                     player.command(["cycle", "sub"])
@@ -490,6 +520,13 @@ ApplicationWindow {
                 }
                 shortcut: keybinds.cycleAudio
             }
+            Action {
+                text: "Cycle Video"
+                onTriggered: {
+                    player.command(["cycle", "video"])
+                }
+                shortcut: keybinds.cycleVideo
+            }
         }
 
         Menu {
@@ -503,16 +540,6 @@ ApplicationWindow {
                 opacity: 0.6
             }
             delegate: CustomMenuItem {}
-
-            Action {
-                text: "Tracks"
-                onTriggered: {
-                    tracksMenuUpdate()
-                    subtitlesMenu.visible = !subtitlesMenu.visible
-                    subtitlesMenuBackground.visible = !subtitlesMenuBackground.visible
-                }
-                shortcut: keybinds.tracks
-            }
 
             Action {
                 text: "Fullscreen"
