@@ -326,8 +326,8 @@ ApplicationWindow {
             property string fullscreen: "F"
             property string tracks: "Ctrl+T"
             property string statsForNerds: "I"
-            property string forwardFrame: "Period"
-            property string backwardFrame: "Comma"
+            property string forwardFrame: "."
+            property string backwardFrame: ","
         }
 
     MenuBar {
