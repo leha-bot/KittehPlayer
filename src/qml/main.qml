@@ -213,8 +213,12 @@ ApplicationWindow {
             nativeSubs.text = player.getProperty("sub-text")
         }
 
+        function isAnyMenuOpen() {
+            return subtitlesMenu.visible || settingsMenu.visible || fileMenuBarItem.opened || playbackMenuBarItem.opened || viewMenuBarItem.opened
+        }
+
         function hideControls() {
-	        if ( ! (subtitlesMenu.visible || settingsMenu.visible || fileMenuBarItem.opened) ) {
+	        if ( ! isAnyMenuOpen() ) {
                 player.setOption("sub-margin-y", "22")
                 controlsBar.visible = false
                 controlsBackground.visible = false
@@ -308,25 +312,6 @@ ApplicationWindow {
                 mouseAreaPlayerTimer.restart()
             }
         }
-
-        /*Item {
-            id: keybinds
-            anchors.fill: parent
-            focus: true
-            Keys.onPressed: {
-                if (event.key == Qt.Key_K || event.key == Qt.Key_Space) {
-                    player.command(["cycle", "pause"])
-                } else if (event.key == Qt.Key_J) {
-                    player.command(["seek", "-10"])
-                } else if (event.key == Qt.Key_L) {
-                    player.command(["seek", "10"])
-                } else if (event.key == Qt.Key_I) {
-                    player.command(["script-binding", "stats/display-stats-toggle"])
-                }
-                updateControls()
-            }
-        }*/
-
 
     MenuBar {
         id: menuBar
@@ -460,6 +445,14 @@ ApplicationWindow {
                 }
                 shortcut: "F"
             }
+
+            Action {
+                text: "Stats For Nerds"
+                onTriggered: {
+                    player.command(["script-binding", "stats/display-stats-toggle"])
+                }
+                shortcut: "I"
+            }
         }
 
 
@@ -485,7 +478,6 @@ ApplicationWindow {
                 color: "black"
                 opacity: 0.6
             }
-
 
             Rectangle {
                 id: subtitlesMenu
