@@ -317,15 +317,15 @@ ApplicationWindow {
         Settings {
             id: keybinds
             category: "Keybinds"
-            property string pause_play: "K"
-            property string forward_10: "L"
-            property string rewind_10: "J"
-            property string open_file: "Ctrl+O"
-            property string open_uri: "Ctrl+Shift+O"
-            property string quit: "Ctrl+Q"
-            property string fullscreen: "F"
-            property string tracks: "Ctrl+T"
-            property string stats_for_nerds: "I"
+            property string PlayPause: "K"
+            property string Forward10: "L"
+            property string Rewind10: "J"
+            property string OpenFile: "Ctrl+O"
+            property string OpenURI: "Ctrl+Shift+O"
+            property string Quit: "Ctrl+Q"
+            property string Fullscreen: "F"
+            property string Tracks: "Ctrl+T"
+            property string StatsForNerds: "I"
         }
 
     MenuBar {
@@ -378,18 +378,18 @@ ApplicationWindow {
             Action {
                 text: "Open File"
                 onTriggered: fileDialog.open()
-                shortcut: keybinds.open_file
+                shortcut: keybinds.OpenFile
             }
             Action {
                 text: "Open URI/URL"
                 onTriggered: loadDialog.open()
-                shortcut: keybinds.open_uri
+                shortcut: keybinds.OpenURI
 
             }
             Action {
                 text: "Exit"
                 onTriggered: Qt.quit()
-                shortcut: keybinds.quit
+                shortcut: keybinds.Quit
             }
         }
         
@@ -411,7 +411,7 @@ ApplicationWindow {
                     player.command(["cycle", "pause"])
                     updateControls()
                 }
-                shortcut: String(keybinds.pause_play)
+                shortcut: String(keybinds.PlayPause)
             }
             Action {
                 text: "Rewind 10s"
@@ -419,7 +419,7 @@ ApplicationWindow {
                     player.command(["seek", "-10"])
                     updateControls()
                 }
-                shortcut: keybinds.rewind_10
+                shortcut: keybinds.Rewind10
             }
             Action {
                 text: "Forward 10s"
@@ -427,7 +427,7 @@ ApplicationWindow {
                     player.command(["seek", "10"])
                     updateControls()
                 }
-                shortcut: keybinds.forward_10
+                shortcut: keybinds.Forward10
             }
         }
 
@@ -450,7 +450,7 @@ ApplicationWindow {
                     subtitlesMenu.visible = !subtitlesMenu.visible
                     subtitlesMenuBackground.visible = !subtitlesMenuBackground.visible
                 }
-                shortcut: keybinds.tracks
+                shortcut: keybinds.Tracks
             }
 
             Action {
@@ -458,7 +458,7 @@ ApplicationWindow {
                 onTriggered: {
                     toggleFullscreen()
                 }
-                shortcut: keybinds.fullscreen
+                shortcut: keybinds.Fullscreen
             }
 
             Action {
@@ -466,7 +466,7 @@ ApplicationWindow {
                 onTriggered: {
                     player.command(["script-binding", "stats/display-stats-toggle"])
                 }
-                shortcut: keybinds.stats_for_nerds
+                shortcut: keybinds.StatsForNerds
             }
         }
 
