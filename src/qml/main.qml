@@ -17,8 +17,7 @@ ApplicationWindow {
     FontLoader {
         id: notoFont
         source: "fonts/NotoSans.ttf"
-    }   
-
+    } 
 
     property int lastScreenVisibility
 
@@ -67,7 +66,6 @@ ApplicationWindow {
     }
 
     function updateControls() {
-        keybinds.focus = true
         updatePrev()
         updatePlayPauseIcon()
         updateVolume()
@@ -76,10 +74,6 @@ ApplicationWindow {
     function updatePlayPause() {
         player.command(["cycle", "pause"])
         updatePlayPauseIcon()
-    }
-
-    function setSubtitle(sub) {
-        console.log(sub)
     }
 
     function tracksMenuUpdate() {
@@ -135,14 +129,16 @@ ApplicationWindow {
     MpvObject {
         id: player
         anchors.fill: parent
+        width: parent.width
+        height: parent.height
 
         Timer {
             id: initTimer
-            interval: 2000
+            interval: 1000
             running: false
-	    repeat: false
+	        repeat: false
             onTriggered: {
-		player.startPlayer()
+		        player.startPlayer()
             }
         }
         Component.onCompleted: { initTimer.start() }
@@ -199,6 +195,16 @@ ApplicationWindow {
             progressBar.value = val
         }
 
+        function skipToNinth(val) {
+            console.log(val)
+            var skipto = 0
+            if (val != 0) {
+                skipto = Math.floor(progressBar.to / 9 * val)
+            }
+            console.log(skipto)
+            player.command(["seek", skipto, "absolute"])
+        }
+
         function setTitle() {
             titleLabel.text = player.getProperty("media-title")
         }
@@ -208,7 +214,7 @@ ApplicationWindow {
         }
 
         function hideControls() {
-	        if ( ! (subtitlesMenu.visible || settingsMenu.visible) ) {
+	        if ( ! (subtitlesMenu.visible || settingsMenu.visible || fileMenuBarItem.opened) ) {
                 player.setOption("sub-margin-y", "22")
                 controlsBar.visible = false
                 controlsBackground.visible = false
@@ -303,17 +309,36 @@ ApplicationWindow {
             }
         }
 
+        /*Item {
+            id: keybinds
+            anchors.fill: parent
+            focus: true
+            Keys.onPressed: {
+                if (event.key == Qt.Key_K || event.key == Qt.Key_Space) {
+                    player.command(["cycle", "pause"])
+                } else if (event.key == Qt.Key_J) {
+                    player.command(["seek", "-10"])
+                } else if (event.key == Qt.Key_L) {
+                    player.command(["seek", "10"])
+                } else if (event.key == Qt.Key_I) {
+                    player.command(["script-binding", "stats/display-stats-toggle"])
+                }
+                updateControls()
+            }
+        }*/
+
 
     MenuBar {
         id: menuBar
-        contentWidth: parent.width
+        //width: parent.width
+        height: Screen.height / 24
         delegate: MenuBarItem {
             id: menuBarItem
 
             contentItem: Text {
                 text: menuBarItem.text
                 font.family: notoFont.name
-                font.pixelSize: 12
+                font.pixelSize: 14
                 renderType: Text.NativeRendering
                 opacity: 1
                 color: menuBarItem.highlighted ? "#5a50da" : "white"
@@ -338,36 +363,228 @@ ApplicationWindow {
         }
 
         Menu {
+            id: fileMenuBarItem
             title: "File"
-            MenuItem {
+            width: 100
+            background: Rectangle {
+                implicitWidth: parent.width
+                implicitHeight: 10
+                color: "black"
+                opacity: 0.6
+            }
+            delegate: CustomMenuItem {}
+
+
+            Action {
                 text: "Open File"
                 onTriggered: fileDialog.open()
+                shortcut: "Ctrl+O"
             }
-            MenuItem {
+            Action {
                 text: "Open URI/URL"
                 onTriggered: loadDialog.open()
+                shortcut: "Ctrl+Shift+O"
+
             }
-            MenuItem {
+            Action {
                 text: "Exit"
                 onTriggered: Qt.quit()
+                shortcut: "Ctrl+Q"
+            }
+        }
+        
+        Menu {
+            id: playbackMenuBarItem
+            title: "Playback"
+            width: 100
+            background: Rectangle {
+                implicitWidth: parent.width
+                implicitHeight: 10
+                color: "black"
+                opacity: 0.6
+            }
+            delegate: CustomMenuItem { width: 100 }
+
+            Action {
+                text: "Play/Pause"
+                onTriggered: {
+                    player.command(["cycle", "pause"])
+                    updateControls()
+                }
+                shortcut: "K,Space"
+            }
+            Action {
+                text: "Rewind 10s"
+                onTriggered: {
+                    player.command(["seek", "-10"])
+                    updateControls()
+                }
+                shortcut: "J"
+            }
+            Action {
+                text: "Forward 10s"
+                onTriggered: {
+                    player.command(["seek", "10"])
+                    updateControls()
+                }
+                shortcut: "L"
+            }
+        }
+
+        Menu {
+            id: viewMenuBarItem
+            title: "View"
+            width: 100
+            background: Rectangle {
+                implicitWidth: parent.width
+                implicitHeight: 10
+                color: "black"
+                opacity: 0.6
+            }
+            delegate: CustomMenuItem {}
+
+            Action {
+                text: "Tracks"
+                onTriggered: {
+                    tracksMenuUpdate()
+                    subtitlesMenu.visible = !subtitlesMenu.visible
+                    subtitlesMenuBackground.visible = !subtitlesMenuBackground.visible
+                }
+                shortcut: "Ctrl+T"
             }
 
-        }
-        /*Menu {
-            title: "Help"
-            MenuItem {
-                text: "About"
-                onTriggered: aboutDialog.open()
+            Action {
+                text: "Fullscreen"
+                onTriggered: {
+                    toggleFullscreen()
+                }
+                shortcut: "F"
             }
-        }*/
+        }
+
+
+        Action { onTriggered: player.skipToNinth(parseInt(shortcut)); shortcut: "1";}
+        Action { onTriggered: player.skipToNinth(parseInt(shortcut)); shortcut: "2";}
+        Action { onTriggered: player.skipToNinth(parseInt(shortcut)); shortcut: "3";}
+        Action { onTriggered: player.skipToNinth(parseInt(shortcut)); shortcut: "4";}
+        Action { onTriggered: player.skipToNinth(parseInt(shortcut)); shortcut: "5";}
+        Action { onTriggered: player.skipToNinth(parseInt(shortcut)); shortcut: "6";}
+        Action { onTriggered: player.skipToNinth(parseInt(shortcut)); shortcut: "7";}
+        Action { onTriggered: player.skipToNinth(parseInt(shortcut)); shortcut: "8";}
+        Action { onTriggered: player.skipToNinth(parseInt(shortcut)); shortcut: "9";}
+        Action { onTriggered: player.skipToNinth(parseInt(shortcut)); shortcut: "0";)
+
     }
+
+            Rectangle {
+                id: subtitlesMenuBackground
+                anchors.fill: subtitlesMenu
+                Layout.fillWidth: true
+                Layout.fillHeight: true
+                visible: false
+                color: "black"
+                opacity: 0.6
+            }
+
+
+            Rectangle {
+                id: subtitlesMenu
+                color: "transparent"
+                width: childrenRect.width
+                height: childrenRect.height
+                visible: false
+                anchors.centerIn: player
+                anchors.right: player.right
+                anchors.bottom: progressBar.top
+                border.color: "black"
+                border.width: 2
+                
+
+                Text {
+                    id: audioLabel
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    text: "Audio"
+                    color: "white"
+                    font.family: notoFont.name
+                    font.pixelSize: 14
+                    renderType: Text.NativeRendering
+                    horizontalAlignment: Text.AlignHCenter
+                    opacity: 1
+                }
+                ComboBox {
+                    id: audioList
+                    textRole: "key"
+                    anchors.top: audioLabel.bottom
+                    model: ListModel {
+                        id: audioModel
+                    }
+                    onActivated: {
+                        player.command(["set", "aid", String(
+                                              audioModel.get(index).value)])
+                    }
+                    opacity: 1
+                }
+                Text {
+                    id: subLabel
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    text: "Subtitles"
+                    color: "white"
+                    font.family: notoFont.name
+                    font.pixelSize: 14
+                    anchors.top: audioList.bottom
+                    renderType: Text.NativeRendering
+                    horizontalAlignment: Text.AlignHCenter
+                    opacity: 1
+                }
+                ComboBox {
+                    id: subList
+                    textRole: "key"
+                    anchors.top: subLabel.bottom
+                    model: ListModel {
+                        id: subModel
+                    }
+                    onActivated: {
+                        player.command(["set", "sid", String(
+                                              subModel.get(index).value)])
+                    }
+                    opacity: 1
+                }
+                Text {
+                    id: vidLabel
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                    text: "Video"
+                    color: "white"
+                    font.family: notoFont.name
+                    font.pixelSize: 14
+                    anchors.top: subList.bottom
+                    renderType: Text.NativeRendering
+                    horizontalAlignment: Text.AlignHCenter
+                    opacity: 1
+                }
+                ComboBox {
+                    id: vidList
+                    textRole: "key"
+                    anchors.top: vidLabel.bottom
+                    model: ListModel {
+                        id: vidModel
+                    }
+                    onActivated: {
+                        player.command(["set", "vid", String(
+                                              vidModel.get(index).value)])
+                    }
+                    opacity: 1
+                }
+            }
 
         Rectangle {
             id: titleBackground
             height: titleBar.height
             anchors.top: titleBar.top
-            anchors.left: parent.left
-            anchors.right: parent.right
+            anchors.left: titleBar.left
+            anchors.right: titleBar.right
             Layout.fillWidth: true
             Layout.fillHeight: true
             color: "black"
@@ -376,12 +593,10 @@ ApplicationWindow {
 
         Rectangle {
             id: titleBar
-            height: Screen.height / 24
+            height: menuBar.height
             anchors.right: parent.right
-            anchors.rightMargin: parent.width / 128
-            anchors.left: parent.left
-            anchors.leftMargin: parent.width / 128
-            anchors.top: menuBar.bottom
+            anchors.left: menuBar.right
+            anchors.top: parent.top
 
             visible: true
             color: "transparent"
@@ -393,6 +608,7 @@ ApplicationWindow {
                 width: parent.width
                 height: parent.height
                 anchors.left: parent.left
+                anchors.leftMargin: 10
                 anchors.bottom: parent.bottom
                 anchors.bottomMargin: 4
                 anchors.topMargin: 4
@@ -494,107 +710,6 @@ ApplicationWindow {
                         text: "Enter Path"
                         onClicked: loadDialog.open()
                     }
-                }
-            }
-
-            Rectangle {
-                id: subtitlesMenuBackground
-                anchors.fill: subtitlesMenu
-                Layout.fillWidth: true
-                Layout.fillHeight: true
-                visible: false
-                color: "black"
-                opacity: 0.6
-                radius: 5
-            }
-
-
-            Rectangle {
-                id: subtitlesMenu
-                color: "transparent"
-                width: childrenRect.width
-                height: childrenRect.height
-                visible: false
-                anchors.right: subtitlesButton.right
-                anchors.bottom: progressBar.top
-                radius: 5
-
-                Text {
-                    id: audioLabel
-                    anchors.left: parent.left
-                    anchors.right: parent.right
-                    text: "Audio"
-                    color: "white"
-                    font.family: notoFont.name
-                    font.pixelSize: 14
-                    renderType: Text.NativeRendering
-                    horizontalAlignment: Text.AlignHCenter
-                    opacity: 1
-                }
-                ComboBox {
-                    id: audioList
-                    textRole: "key"
-                    anchors.top: audioLabel.bottom
-                    model: ListModel {
-                        id: audioModel
-                    }
-                    onActivated: {
-                        player.command(["set", "aid", String(
-                                              audioModel.get(index).value)])
-                    }
-                    opacity: 1
-                }
-                Text {
-                    id: subLabel
-                    anchors.left: parent.left
-                    anchors.right: parent.right
-                    text: "Subtitles"
-                    color: "white"
-                    font.family: notoFont.name
-                    font.pixelSize: 14
-                    anchors.top: audioList.bottom
-                    renderType: Text.NativeRendering
-                    horizontalAlignment: Text.AlignHCenter
-                    opacity: 1
-                }
-                ComboBox {
-                    id: subList
-                    textRole: "key"
-                    anchors.top: subLabel.bottom
-                    model: ListModel {
-                        id: subModel
-                    }
-                    onActivated: {
-                        player.command(["set", "sid", String(
-                                              subModel.get(index).value)])
-                    }
-                    opacity: 1
-                }
-                Text {
-                    id: vidLabel
-                    anchors.left: parent.left
-                    anchors.right: parent.right
-                    text: "Video"
-                    color: "white"
-                    font.family: notoFont.name
-                    font.pixelSize: 14
-                    anchors.top: subList.bottom
-                    renderType: Text.NativeRendering
-                    horizontalAlignment: Text.AlignHCenter
-                    opacity: 1
-                }
-                ComboBox {
-                    id: vidList
-                    textRole: "key"
-                    anchors.top: vidLabel.bottom
-                    model: ListModel {
-                        id: vidModel
-                    }
-                    onActivated: {
-                        player.command(["set", "vid", String(
-                                              vidModel.get(index).value)])
-                    }
-                    opacity: 1
                 }
             }
 
@@ -838,22 +953,5 @@ ApplicationWindow {
             }
         }
 
-        Item {
-            id: keybinds
-            anchors.fill: parent
-            focus: true
-            Keys.onPressed: {
-                if (event.key == Qt.Key_K || event.key == Qt.Key_Space) {
-                    player.command(["cycle", "pause"])
-                } else if (event.key == Qt.Key_J) {
-                    player.command(["seek", "-10"])
-                } else if (event.key == Qt.Key_L) {
-                    player.command(["seek", "10"])
-                } else if (event.key == Qt.Key_I) {
-                    player.command(["script-binding", "stats/display-stats-toggle"])
-                }
-                updateControls()
-            }
-        }
     }
 }
