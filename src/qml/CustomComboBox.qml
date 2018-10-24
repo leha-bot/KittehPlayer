@@ -11,7 +11,7 @@ ComboBox {
     FontLoader {
         id: notoFont
         source: "fonts/NotoSans.ttf"
-    }  
+    }
 
     indicator: Canvas {
         id: canvas
@@ -27,13 +27,13 @@ ComboBox {
         }
 
         onPaint: {
-            context.reset();
-            context.moveTo(0, 0);
-            context.lineTo(width, 0);
-            context.lineTo(width / 2, height);
-            context.closePath();
-            context.fillStyle = control.pressed ? "#17a81a" : "#21be2b";
-            context.fill();
+            context.reset()
+            context.moveTo(0, 0)
+            context.lineTo(width, 0)
+            context.lineTo(width / 2, height)
+            context.closePath()
+            context.fillStyle = control.pressed ? "#17a81a" : "#21be2b"
+            context.fill()
         }
     }
 
@@ -66,9 +66,13 @@ ComboBox {
             implicitHeight: contentHeight
             model: control.popup.visible ? control.delegateModel : null
             currentIndex: control.highlightedIndex
-            highlight: Rectangle { color: "white"; opacity: 1; }
- 
-            ScrollIndicator.vertical: ScrollIndicator { }
+            highlight: Rectangle {
+                color: "white"
+                opacity: 1
+            }
+
+            ScrollIndicator.vertical: ScrollIndicator {
+            }
         }
 
         background: Rectangle {

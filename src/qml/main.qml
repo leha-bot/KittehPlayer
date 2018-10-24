@@ -18,7 +18,7 @@ ApplicationWindow {
     FontLoader {
         id: notoFont
         source: "fonts/NotoSans.ttf"
-    } 
+    }
 
     property int lastScreenVisibility
 
@@ -91,8 +91,7 @@ ApplicationWindow {
         console.log("Updating Track Menu, Total Tracks: " + tracks)
         for (track = 0; track <= tracks; track++) {
             var trackID = player.getProperty("track-list/" + track + "/id")
-            var trackType = player.getProperty(
-                        "track-list/" + track + "/type")
+            var trackType = player.getProperty("track-list/" + track + "/type")
             var trackLang = LanguageCodes.localeCodeToEnglish(
                         String(player.getProperty(
                                    "track-list/" + track + "/lang")))
@@ -137,23 +136,27 @@ ApplicationWindow {
             id: initTimer
             interval: 1000
             running: false
-	        repeat: false
+            repeat: false
             onTriggered: {
-		        player.startPlayer()
+                player.startPlayer()
             }
         }
-        Component.onCompleted: { initTimer.start() }
+        Component.onCompleted: {
+            initTimer.start()
+        }
 
         function startPlayer() {
             var args = Qt.application.arguments
             var len = Qt.application.arguments.length
             var argNo = 0
             player.setOption("ytdl-format", "bestvideo[width<=" + Screen.width
-                               + "][height<=" + Screen.height + "]+bestaudio")
+                             + "][height<=" + Screen.height + "]+bestaudio")
             if (len > 1) {
                 for (argNo = 1; argNo < len; argNo++) {
                     var argument = args[argNo]
-		    if (argument.indexOf("KittehPlayer") !== -1) { continue; } 
+                    if (argument.indexOf("KittehPlayer") !== -1) {
+                        continue
+                    }
                     if (argument.startsWith("--")) {
                         argument = argument.substr(2)
                         if (argument.length > 0) {
@@ -167,7 +170,7 @@ ApplicationWindow {
                                 player.setOption(splitArg[0], splitArg[1])
                             }
                         }
-                    } else { 
+                    } else {
                         player.command(["loadfile", argument])
                     }
                 }
@@ -215,12 +218,14 @@ ApplicationWindow {
         }
 
         function isAnyMenuOpen() {
-            return subtitlesMenu.visible || settingsMenu.visible || fileMenuBarItem.opened || playbackMenuBarItem.opened || viewMenuBarItem.opened || tracksMenuBarItem.opened
+            return subtitlesMenu.visible || settingsMenu.visible
+                    || fileMenuBarItem.opened || playbackMenuBarItem.opened
+                    || viewMenuBarItem.opened || tracksMenuBarItem.opened
         }
 
         function hideControls() {
-	        if ( ! isAnyMenuOpen() ) {
-                player.setOption("sub-margin-y", "22")
+            if (!isAnyMenuOpen()) {
+                //player.setOption("sub-margin-y", "22")
                 controlsBar.visible = false
                 controlsBackground.visible = false
                 titleBar.visible = false
@@ -230,7 +235,7 @@ ApplicationWindow {
         }
 
         function showControls() {
-            if (! controlsBar.visible) {
+            if (!controlsBar.visible) {
                 updateControls()
                 //player.setOption("sub-margin-y", String(controlsBar.height + progressBar.height))
                 controlsBar.visible = true
@@ -259,9 +264,9 @@ ApplicationWindow {
             title: "URL / File Path"
             standardButtons: StandardButton.Cancel | StandardButton.Open
             onAccepted: {
-               player.command(["loadfile", pathText.text])
-               pathText.text = ""
-	        }
+                player.command(["loadfile", pathText.text])
+                pathText.text = ""
+            }
             TextField {
                 id: pathText
                 placeholderText: qsTr("URL / File Path")
@@ -337,342 +342,375 @@ ApplicationWindow {
             property string cycleVideoAspect: "Shift+A"
         }
 
-    MenuBar {
-        id: menuBar
-        //width: parent.width
-        height: Screen.height / 24
-        delegate: MenuBarItem {
-            id: menuBarItem
+        MenuBar {
+            id: menuBar
+            //width: parent.width
+            height: Screen.height / 24
+            delegate: MenuBarItem {
+                id: menuBarItem
 
-            contentItem: Text {
-                text: menuBarItem.text
-                font.family: notoFont.name
-                font.pixelSize: 14
-                renderType: Text.NativeRendering
-                opacity: 1
-                color: menuBarItem.highlighted ? "#5a50da" : "white"
-                horizontalAlignment: Text.AlignLeft
-                verticalAlignment: Text.AlignVCenter
-                elide: Text.ElideRight
+                contentItem: Text {
+                    text: menuBarItem.text
+                    font.family: notoFont.name
+                    font.pixelSize: 14
+                    renderType: Text.NativeRendering
+                    opacity: 1
+                    color: menuBarItem.highlighted ? "#5a50da" : "white"
+                    horizontalAlignment: Text.AlignLeft
+                    verticalAlignment: Text.AlignVCenter
+                    elide: Text.ElideRight
+                }
+
+                background: Rectangle {
+                    implicitWidth: 10
+                    implicitHeight: 10
+                    opacity: 1
+                    color: menuBarItem.highlighted ? "#c0c0f0" : "transparent"
+                }
             }
 
             background: Rectangle {
-                implicitWidth: 10
+                implicitWidth: parent.width
                 implicitHeight: 10
-                opacity: 1
-                color: menuBarItem.highlighted ? "#c0c0f0" : "transparent"
+                color: "black"
+                opacity: 0.6
+            }
+
+            Menu {
+                id: fileMenuBarItem
+                title: "File"
+                width: 100
+                background: Rectangle {
+                    implicitWidth: parent.width
+                    implicitHeight: 10
+                    color: "black"
+                    opacity: 0.6
+                }
+                delegate: CustomMenuItem {
+                }
+
+                Action {
+                    text: "Open File"
+                    onTriggered: fileDialog.open()
+                    shortcut: keybinds.openFile
+                }
+                Action {
+                    text: "Open URI/URL"
+                    onTriggered: loadDialog.open()
+                    shortcut: keybinds.openURI
+                }
+                Action {
+                    text: "Exit"
+                    onTriggered: Qt.quit()
+                    shortcut: keybinds.quit
+                }
+            }
+
+            Menu {
+                id: playbackMenuBarItem
+                title: "Playback"
+                width: 100
+                background: Rectangle {
+                    implicitWidth: parent.width
+                    implicitHeight: 10
+                    color: "black"
+                    opacity: 0.6
+                }
+                delegate: CustomMenuItem {
+                    width: 100
+                }
+
+                Action {
+                    text: "Play/Pause"
+                    onTriggered: {
+                        player.command(["cycle", "pause"])
+                        updateControls()
+                    }
+                    shortcut: String(keybinds.playPause)
+                }
+                Action {
+                    text: "Rewind 10s"
+                    onTriggered: {
+                        player.command(["seek", "-10"])
+                        updateControls()
+                    }
+                    shortcut: keybinds.rewind10
+                }
+                Action {
+                    text: "Forward 10s"
+                    onTriggered: {
+                        player.command(["seek", "10"])
+                        updateControls()
+                    }
+                    shortcut: keybinds.forward10
+                }
+                Action {
+                    text: "Rewind 5s"
+                    onTriggered: {
+                        player.command(["seek", "-5"])
+                        updateControls()
+                    }
+                    shortcut: keybinds.rewind5
+                }
+                Action {
+                    text: "Forward 5s"
+                    onTriggered: {
+                        player.command(["seek", "5"])
+                        updateControls()
+                    }
+                    shortcut: keybinds.forward5
+                }
+                Action {
+                    text: "Forward Frame"
+                    onTriggered: {
+                        player.command(["frame-step"])
+                        updateControls()
+                    }
+                    shortcut: keybinds.forwardFrame
+                }
+                Action {
+                    text: "Back Frame"
+                    onTriggered: {
+                        player.command(["frame-back-step"])
+                        updateControls()
+                    }
+                    shortcut: keybinds.backwardFrame
+                }
+                Action {
+                    text: "Switch Aspect Ratio"
+                    onTriggered: {
+                        player.command(
+                                    ["cycle-values", "video-aspect", "16:9", "4:3", "2.35:1", "-1"])
+                    }
+                    shortcut: keybinds.cycleVideoAspect
+                }
+            }
+
+            Menu {
+                id: tracksMenuBarItem
+                title: "Tracks"
+                width: 150
+                background: Rectangle {
+                    implicitWidth: parent.width
+                    implicitHeight: 10
+                    color: "black"
+                    opacity: 0.6
+                }
+                delegate: CustomMenuItem {
+                    width: 100
+                }
+                Action {
+                    text: "Track Menu"
+                    onTriggered: {
+                        tracksMenuUpdate()
+                        subtitlesMenu.visible = !subtitlesMenu.visible
+                        subtitlesMenuBackground.visible = !subtitlesMenuBackground.visible
+                    }
+                    shortcut: keybinds.tracks
+                }
+                Action {
+                    text: "Cycle Subs"
+                    onTriggered: {
+                        player.command(["cycle", "sub"])
+                    }
+                    shortcut: keybinds.cycleSub
+                }
+                Action {
+                    text: "Cycle Subs Backwards"
+                    onTriggered: {
+                        player.command(["cycle", "sub", "down"])
+                    }
+                    shortcut: keybinds.cycleSubBackwards
+                }
+                Action {
+                    text: "Cycle Audio"
+                    onTriggered: {
+                        player.command(["cycle", "audio"])
+                    }
+                    shortcut: keybinds.cycleAudio
+                }
+                Action {
+                    text: "Cycle Video"
+                    onTriggered: {
+                        player.command(["cycle", "video"])
+                    }
+                    shortcut: keybinds.cycleVideo
+                }
+            }
+
+            Menu {
+                id: viewMenuBarItem
+                title: "View"
+                width: 100
+                background: Rectangle {
+                    implicitWidth: parent.width
+                    implicitHeight: 10
+                    color: "black"
+                    opacity: 0.6
+                }
+                delegate: CustomMenuItem {
+                }
+
+                Action {
+                    text: "Fullscreen"
+                    onTriggered: {
+                        toggleFullscreen()
+                    }
+                    shortcut: keybinds.fullscreen
+                }
+
+                Action {
+                    text: "Stats For Nerds"
+                    onTriggered: {
+                        player.command(
+                                    ["script-binding", "stats/display-stats-toggle"])
+                    }
+                    shortcut: keybinds.statsForNerds
+                }
+            }
+
+            Action {
+                onTriggered: player.skipToNinth(parseInt(shortcut))
+                shortcut: "1"
+            }
+            Action {
+                onTriggered: player.skipToNinth(parseInt(shortcut))
+                shortcut: "2"
+            }
+            Action {
+                onTriggered: player.skipToNinth(parseInt(shortcut))
+                shortcut: "3"
+            }
+            Action {
+                onTriggered: player.skipToNinth(parseInt(shortcut))
+                shortcut: "4"
+            }
+            Action {
+                onTriggered: player.skipToNinth(parseInt(shortcut))
+                shortcut: "5"
+            }
+            Action {
+                onTriggered: player.skipToNinth(parseInt(shortcut))
+                shortcut: "6"
+            }
+            Action {
+                onTriggered: player.skipToNinth(parseInt(shortcut))
+                shortcut: "7"
+            }
+            Action {
+                onTriggered: player.skipToNinth(parseInt(shortcut))
+                shortcut: "8"
+            }
+            Action {
+                onTriggered: player.skipToNinth(parseInt(shortcut))
+                shortcut: "9"
+            }
+            Action {
+                onTriggered: player.skipToNinth(parseInt(shortcut))
+                shortcut: "0"
             }
         }
 
-        background: Rectangle {
-            implicitWidth: parent.width
-            implicitHeight: 10
+        Rectangle {
+            id: subtitlesMenuBackground
+            anchors.fill: subtitlesMenu
+            Layout.fillWidth: true
+            Layout.fillHeight: true
+            visible: false
             color: "black"
             opacity: 0.6
         }
 
-        Menu {
-            id: fileMenuBarItem
-            title: "File"
-            width: 100
-            background: Rectangle {
-                implicitWidth: parent.width
-                implicitHeight: 10
-                color: "black"
-                opacity: 0.6
-            }
-            delegate: CustomMenuItem {}
+        Rectangle {
+            id: subtitlesMenu
+            color: "transparent"
+            width: childrenRect.width
+            height: childrenRect.height
+            visible: false
+            anchors.centerIn: player
+            anchors.right: player.right
+            anchors.bottom: progressBar.top
+            border.color: "black"
+            border.width: 2
 
-
-            Action {
-                text: "Open File"
-                onTriggered: fileDialog.open()
-                shortcut: keybinds.openFile
+            Text {
+                id: audioLabel
+                anchors.left: parent.left
+                anchors.right: parent.right
+                text: "Audio"
+                color: "white"
+                font.family: notoFont.name
+                font.pixelSize: 14
+                renderType: Text.NativeRendering
+                horizontalAlignment: Text.AlignHCenter
+                opacity: 1
             }
-            Action {
-                text: "Open URI/URL"
-                onTriggered: loadDialog.open()
-                shortcut: keybinds.openURI
-
+            ComboBox {
+                id: audioList
+                textRole: "key"
+                anchors.top: audioLabel.bottom
+                model: ListModel {
+                    id: audioModel
+                }
+                onActivated: {
+                    player.command(["set", "aid", String(audioModel.get(
+                                                             index).value)])
+                }
+                opacity: 1
             }
-            Action {
-                text: "Exit"
-                onTriggered: Qt.quit()
-                shortcut: keybinds.quit
+            Text {
+                id: subLabel
+                anchors.left: parent.left
+                anchors.right: parent.right
+                text: "Subtitles"
+                color: "white"
+                font.family: notoFont.name
+                font.pixelSize: 14
+                anchors.top: audioList.bottom
+                renderType: Text.NativeRendering
+                horizontalAlignment: Text.AlignHCenter
+                opacity: 1
+            }
+            ComboBox {
+                id: subList
+                textRole: "key"
+                anchors.top: subLabel.bottom
+                model: ListModel {
+                    id: subModel
+                }
+                onActivated: {
+                    player.command(["set", "sid", String(subModel.get(
+                                                             index).value)])
+                }
+                opacity: 1
+            }
+            Text {
+                id: vidLabel
+                anchors.left: parent.left
+                anchors.right: parent.right
+                text: "Video"
+                color: "white"
+                font.family: notoFont.name
+                font.pixelSize: 14
+                anchors.top: subList.bottom
+                renderType: Text.NativeRendering
+                horizontalAlignment: Text.AlignHCenter
+                opacity: 1
+            }
+            ComboBox {
+                id: vidList
+                textRole: "key"
+                anchors.top: vidLabel.bottom
+                model: ListModel {
+                    id: vidModel
+                }
+                onActivated: {
+                    player.command(["set", "vid", String(vidModel.get(
+                                                             index).value)])
+                }
+                opacity: 1
             }
         }
-        
-        Menu {
-            id: playbackMenuBarItem
-            title: "Playback"
-            width: 100
-            background: Rectangle {
-                implicitWidth: parent.width
-                implicitHeight: 10
-                color: "black"
-                opacity: 0.6
-            }
-            delegate: CustomMenuItem { width: 100 }
-
-            Action {
-                text: "Play/Pause"
-                onTriggered: {
-                    player.command(["cycle", "pause"])
-                    updateControls()
-                }
-                shortcut: String(keybinds.playPause)
-            }
-            Action {
-                text: "Rewind 10s"
-                onTriggered: {
-                    player.command(["seek", "-10"])
-                    updateControls()
-                }
-                shortcut: keybinds.rewind10
-            }
-            Action {
-                text: "Forward 10s"
-                onTriggered: {
-                    player.command(["seek", "10"])
-                    updateControls()
-                }
-                shortcut: keybinds.forward10
-            }
-                        Action {
-                text: "Rewind 5s"
-                onTriggered: {
-                    player.command(["seek", "-5"])
-                    updateControls()
-                }
-                shortcut: keybinds.rewind5
-            }
-            Action {
-                text: "Forward 5s"
-                onTriggered: {
-                    player.command(["seek", "5"])
-                    updateControls()
-                }
-                shortcut: keybinds.forward5
-            }
-            Action {
-                text: "Forward Frame"
-                onTriggered: {
-                    player.command(["frame-step"])
-                    updateControls()
-                }
-                shortcut: keybinds.forwardFrame
-            }
-            Action {
-                text: "Back Frame"
-                onTriggered: {
-                    player.command(["frame-back-step"])
-                    updateControls()
-                }
-                shortcut: keybinds.backwardFrame
-            }
-            Action {
-                text: "Switch Aspect Ratio"
-                onTriggered: {
-                    player.command(["cycle-values", "video-aspect", "16:9", "4:3", "2.35:1", "-1"])
-                }
-                shortcut: keybinds.cycleVideoAspect
-            }
-        }
-
-        Menu {
-            id: tracksMenuBarItem
-            title: "Tracks"
-            width: 150
-            background: Rectangle {
-                implicitWidth: parent.width
-                implicitHeight: 10
-                color: "black"
-                opacity: 0.6
-            }
-            delegate: CustomMenuItem { width: 100 }
-            Action {
-                text: "Track Menu"
-                onTriggered: {
-                    tracksMenuUpdate()
-                    subtitlesMenu.visible = !subtitlesMenu.visible
-                    subtitlesMenuBackground.visible = !subtitlesMenuBackground.visible
-                }
-                shortcut: keybinds.tracks
-            }
-            Action {
-                text: "Cycle Subs"
-                onTriggered: {
-                    player.command(["cycle", "sub"])
-                }
-                shortcut: keybinds.cycleSub
-            }
-            Action {
-                text: "Cycle Subs Backwards"
-                onTriggered: {
-                    player.command(["cycle", "sub", "down"])
-                }
-                shortcut: keybinds.cycleSubBackwards
-            }
-            Action {
-                text: "Cycle Audio"
-                onTriggered: {
-                    player.command(["cycle", "audio"])
-                }
-                shortcut: keybinds.cycleAudio
-            }
-            Action {
-                text: "Cycle Video"
-                onTriggered: {
-                    player.command(["cycle", "video"])
-                }
-                shortcut: keybinds.cycleVideo
-            }
-        }
-
-        Menu {
-            id: viewMenuBarItem
-            title: "View"
-            width: 100
-            background: Rectangle {
-                implicitWidth: parent.width
-                implicitHeight: 10
-                color: "black"
-                opacity: 0.6
-            }
-            delegate: CustomMenuItem {}
-
-            Action {
-                text: "Fullscreen"
-                onTriggered: {
-                    toggleFullscreen()
-                }
-                shortcut: keybinds.fullscreen
-            }
-
-            Action {
-                text: "Stats For Nerds"
-                onTriggered: {
-                    player.command(["script-binding", "stats/display-stats-toggle"])
-                }
-                shortcut: keybinds.statsForNerds
-            }
-        }
-
-
-        Action { onTriggered: player.skipToNinth(parseInt(shortcut)); shortcut: "1";}
-        Action { onTriggered: player.skipToNinth(parseInt(shortcut)); shortcut: "2";}
-        Action { onTriggered: player.skipToNinth(parseInt(shortcut)); shortcut: "3";}
-        Action { onTriggered: player.skipToNinth(parseInt(shortcut)); shortcut: "4";}
-        Action { onTriggered: player.skipToNinth(parseInt(shortcut)); shortcut: "5";}
-        Action { onTriggered: player.skipToNinth(parseInt(shortcut)); shortcut: "6";}
-        Action { onTriggered: player.skipToNinth(parseInt(shortcut)); shortcut: "7";}
-        Action { onTriggered: player.skipToNinth(parseInt(shortcut)); shortcut: "8";}
-        Action { onTriggered: player.skipToNinth(parseInt(shortcut)); shortcut: "9";}
-        Action { onTriggered: player.skipToNinth(parseInt(shortcut)); shortcut: "0";}
-
-    }
-
-            Rectangle {
-                id: subtitlesMenuBackground
-                anchors.fill: subtitlesMenu
-                Layout.fillWidth: true
-                Layout.fillHeight: true
-                visible: false
-                color: "black"
-                opacity: 0.6
-            }
-
-            Rectangle {
-                id: subtitlesMenu
-                color: "transparent"
-                width: childrenRect.width
-                height: childrenRect.height
-                visible: false
-                anchors.centerIn: player
-                anchors.right: player.right
-                anchors.bottom: progressBar.top
-                border.color: "black"
-                border.width: 2
-                
-
-                Text {
-                    id: audioLabel
-                    anchors.left: parent.left
-                    anchors.right: parent.right
-                    text: "Audio"
-                    color: "white"
-                    font.family: notoFont.name
-                    font.pixelSize: 14
-                    renderType: Text.NativeRendering
-                    horizontalAlignment: Text.AlignHCenter
-                    opacity: 1
-                }
-                ComboBox {
-                    id: audioList
-                    textRole: "key"
-                    anchors.top: audioLabel.bottom
-                    model: ListModel {
-                        id: audioModel
-                    }
-                    onActivated: {
-                        player.command(["set", "aid", String(
-                                              audioModel.get(index).value)])
-                    }
-                    opacity: 1
-                }
-                Text {
-                    id: subLabel
-                    anchors.left: parent.left
-                    anchors.right: parent.right
-                    text: "Subtitles"
-                    color: "white"
-                    font.family: notoFont.name
-                    font.pixelSize: 14
-                    anchors.top: audioList.bottom
-                    renderType: Text.NativeRendering
-                    horizontalAlignment: Text.AlignHCenter
-                    opacity: 1
-                }
-                ComboBox {
-                    id: subList
-                    textRole: "key"
-                    anchors.top: subLabel.bottom
-                    model: ListModel {
-                        id: subModel
-                    }
-                    onActivated: {
-                        player.command(["set", "sid", String(
-                                              subModel.get(index).value)])
-                    }
-                    opacity: 1
-                }
-                Text {
-                    id: vidLabel
-                    anchors.left: parent.left
-                    anchors.right: parent.right
-                    text: "Video"
-                    color: "white"
-                    font.family: notoFont.name
-                    font.pixelSize: 14
-                    anchors.top: subList.bottom
-                    renderType: Text.NativeRendering
-                    horizontalAlignment: Text.AlignHCenter
-                    opacity: 1
-                }
-                ComboBox {
-                    id: vidList
-                    textRole: "key"
-                    anchors.top: vidLabel.bottom
-                    model: ListModel {
-                        id: vidModel
-                    }
-                    onActivated: {
-                        player.command(["set", "vid", String(
-                                              vidModel.get(index).value)])
-                    }
-                    opacity: 1
-                }
-            }
 
         Rectangle {
             id: titleBackground
@@ -721,7 +759,7 @@ ApplicationWindow {
         Rectangle {
             id: controlsBackground
             height: controlsBar.visible ? controlsBar.height + (progressBar.topPadding * 2)
-                    - (progressBackground.height * 2) : 0
+                                          - (progressBackground.height * 2) : 0
             anchors.bottom: parent.bottom
             anchors.left: parent.left
             anchors.right: parent.right
@@ -731,37 +769,37 @@ ApplicationWindow {
             opacity: 0.6
         }
 
-    Rectangle {
-        id: nativeSubtitles
-        height: nativeSubs.font.pixelSize + 4
-        visible: nativeSubs.text == "" ? false : true
-        anchors.left: controlsBar.left
-        anchors.right: controlsBar.right
-        anchors.bottom: controlsBackground.top
-        
-        radius: 5
-        color: "transparent"
+        Rectangle {
+            id: nativeSubtitles
+            height: nativeSubs.font.pixelSize + 4
+            visible: nativeSubs.text == "" ? false : true
+            anchors.left: controlsBar.left
+            anchors.right: controlsBar.right
+            anchors.bottom: controlsBackground.top
 
-        Label {
-            id: nativeSubs
-            width: parent.width
-            text: ""
-            color: "white"
-            font.family: notoFont.name
-            font.pixelSize: 24
-            renderType: Text.NativeRendering
-            horizontalAlignment: Text.AlignHCenter
-            anchors.bottom: parent.top
-            opacity: 1
-            wrapMode: Text.WrapAtWordBoundaryOrAnywhere
+            radius: 5
+            color: "transparent"
 
-            background: Rectangle {
-                color: Qt.rgba(0, 0, 0, 0.6)
-                anchors.left: parent.left
-                anchors.right: parent.right
+            Label {
+                id: nativeSubs
+                width: parent.width
+                text: ""
+                color: "white"
+                font.family: notoFont.name
+                font.pixelSize: 24
+                renderType: Text.NativeRendering
+                horizontalAlignment: Text.AlignHCenter
+                anchors.bottom: parent.top
+                opacity: 1
+                wrapMode: Text.WrapAtWordBoundaryOrAnywhere
+
+                background: Rectangle {
+                    color: Qt.rgba(0, 0, 0, 0.6)
+                    anchors.left: parent.left
+                    anchors.right: parent.right
+                }
             }
         }
-    }
 
         Rectangle {
             id: controlsBar
@@ -945,7 +983,7 @@ ApplicationWindow {
                 anchors.bottom: parent.bottom
                 onMoved: {
                     player.command(["set", "volume", Math.round(
-                                          volumeBar.value).toString()])
+                                        volumeBar.value).toString()])
                     updateVolume()
                 }
 
@@ -1047,6 +1085,5 @@ ApplicationWindow {
                 }
             }
         }
-
     }
 }
