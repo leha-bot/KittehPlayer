@@ -568,7 +568,6 @@ function localeCodeToEnglish(loc) {
         que: "Quechua",
         raj: "Rajasthani",
         rap: "Rapanui",
-        qaa-qtz: "Reserved for local use",
         roa: "Romance languages",
         roh: "Romansh",
         rom: "Romany",
