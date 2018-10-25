@@ -103,7 +103,7 @@ ApplicationWindow {
                                     value: trackID
                                 })
                 if (player.getProperty("track-list/" + track + "/selected")) {
-                    subList.currentIndex = subList.count
+                    subList.currentIndex = subList.count - 1
                 }
             } else if (trackType == "audio") {
                 audioModel.append({
@@ -112,7 +112,7 @@ ApplicationWindow {
                                       value: trackID
                                   })
                 if (player.getProperty("track-list/" + track + "/selected")) {
-                    audioList.currentIndex = audioList.count
+                    audioList.currentIndex = audioList.count - 1
                 }
             } else if (trackType == "video") {
                 vidModel.append({
@@ -120,7 +120,7 @@ ApplicationWindow {
                                     value: trackID
                                 })
                 if (player.getProperty("track-list/" + track + "/selected")) {
-                    vidList.currentIndex = vidList.count
+                    vidList.currentIndex = vidList.count - 1
                 }
             }
         }
