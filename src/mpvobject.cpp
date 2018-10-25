@@ -151,6 +151,7 @@ MpvObject::MpvObject(QQuickItem * parent)
         mpv_observe_property(mpv, 0, "media-title", MPV_FORMAT_STRING);
         mpv_observe_property(mpv, 0, "sub-text", MPV_FORMAT_STRING);
         mpv_observe_property(mpv, 0, "time-pos", MPV_FORMAT_DOUBLE);
+        mpv_observe_property(mpv, 0, "demuxer-cache-duration", MPV_FORMAT_DOUBLE);
 
         mpv_set_wakeup_callback(mpv, wakeup, this);
 
@@ -244,6 +245,11 @@ void MpvObject::handle_mpv_event(mpv_event *event)
             }
         } else if (strcmp(prop->name, "sub-text") == 0) {
             QMetaObject::invokeMethod(this,"setSubtitles");
+        } else if (strcmp(prop->name, "demuxer-cache-duration") == 0) {
+            if (prop->format == MPV_FORMAT_DOUBLE) {
+                double duration = *(double *)prop->data;
+                QMetaObject::invokeMethod(this,"setCachedDuration",Q_ARG(QVariant,duration));
+            }
         }
         break;
     }

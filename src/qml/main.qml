@@ -199,6 +199,11 @@ ApplicationWindow {
             progressBar.value = val
         }
 
+        function setCachedDuration(val) {
+            cachedLength.width = progressBar.width / progressBar.to
+                    * (val - progressBar.value) - (progressBar.handle.width / 2)
+        }
+
         function skipToNinth(val) {
             console.log(val)
             var skipto = 0
@@ -278,7 +283,7 @@ ApplicationWindow {
             x: 0
             y: parent.height
             width: parent.width
-            height: controlsBar.height + progressBar.height
+            height: (controlsBar.height * 2) + progressBar.height
             anchors.bottom: parent.bottom
             anchors.bottomMargin: 0
             hoverEnabled: true
@@ -291,7 +296,7 @@ ApplicationWindow {
             id: mouseAreaPlayer
             width: parent.width
             anchors.bottom: mouseAreaBar.top
-            anchors.bottomMargin: controlsBar.height / 22
+            anchors.bottomMargin: 10
             anchors.right: parent.right
             anchors.rightMargin: 0
             anchors.left: parent.left
@@ -879,8 +884,20 @@ ApplicationWindow {
                         opacity: 1
                     }
                 }
+                Rectangle {
+                    id: cachedLength
+                    z: 1
+                    //anchors.left: progressBar.handle.right
+                    anchors.left: progressBar.handle.horizontalCenter
+                    anchors.bottom: progressBar.background.bottom
+                    anchors.top: progressBar.background.top
+                    height: progressBar.background.height
+                    color: "white"
+                    opacity: 0.8
+                }
 
                 handle: Rectangle {
+                    z: 2
                     id: handleRect
                     x: progressBar.leftPadding + progressBar.visualPosition
                        * (progressBar.availableWidth - width)
