@@ -34,9 +34,6 @@ int main( int argc, char *argv[] )
             QProcess updater;
             updater.setProcessChannelMode(QProcess::ForwardedChannels);
             updater.start(program, QStringList() << QProcessEnvironment::systemEnvironment().value("APPIMAGE", ""));
-            if(!updater.waitForStarted())
-                qDebug() << "Failed to start updater.";
-                qDebug() << updater.errorString();
             updater.waitForFinished();
             qDebug() << program;
             exit(0);
