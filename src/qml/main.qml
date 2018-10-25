@@ -291,7 +291,7 @@ ApplicationWindow {
             id: mouseAreaPlayer
             width: parent.width
             anchors.bottom: mouseAreaBar.top
-            anchors.bottomMargin: 0
+            anchors.bottomMargin: controlsBar.height / 22
             anchors.right: parent.right
             anchors.rightMargin: 0
             anchors.left: parent.left
