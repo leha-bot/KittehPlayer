@@ -123,6 +123,7 @@ MpvObject::MpvObject(QQuickItem * parent)
     // Fix?
     mpv_set_option_string(mpv, "ytdl", "yes");
     mpv_set_option_string(mpv, "vo", "libmpv");
+    //mpp_set_option_string(mpv, "no-sub-ass", "yes)
 
     mpv_set_option_string(mpv, "slang", "en");
     /*mpv_set_option_string(mpv, "sub-font", "Noto Sans");
@@ -136,7 +137,7 @@ MpvObject::MpvObject(QQuickItem * parent)
     mpv_set_option_string(mpv, "sub-back-color", "#C0080808");*/
 
     mpv_set_option_string(mpv, "config", "yes");
-
+    //mpv_set_option_string(mpv, "sub-visibility", "no");
     mpv_set_option_string(mpv, "sub-color", "0.0/0.0/0.0/0.0");
     mpv_set_option_string(mpv, "sub-border-color", "0.0/0.0/0.0/0.0");
 
@@ -146,13 +147,15 @@ MpvObject::MpvObject(QQuickItem * parent)
         mpv_observe_property(mpv, 0, "playback-abort", MPV_FORMAT_NONE);
         mpv_observe_property(mpv, 0, "chapter-list", MPV_FORMAT_NODE);
         mpv_observe_property(mpv, 0, "track-list", MPV_FORMAT_NODE);
-
+        mpv_observe_property(mpv, 0, "playlist-pos", MPV_FORMAT_DOUBLE);
+        mpv_observe_property(mpv, 0, "volume", MPV_FORMAT_DOUBLE);
+        mpv_observe_property(mpv, 0, "muted", MPV_FORMAT_DOUBLE);
         mpv_observe_property(mpv, 0, "duration", MPV_FORMAT_DOUBLE);
         mpv_observe_property(mpv, 0, "media-title", MPV_FORMAT_STRING);
         mpv_observe_property(mpv, 0, "sub-text", MPV_FORMAT_STRING);
         mpv_observe_property(mpv, 0, "time-pos", MPV_FORMAT_DOUBLE);
         mpv_observe_property(mpv, 0, "demuxer-cache-duration", MPV_FORMAT_DOUBLE);
-
+        mpv_observe_property(mpv, 0, "pause", MPV_FORMAT_NONE);
         mpv_set_wakeup_callback(mpv, wakeup, this);
 
     if (mpv_initialize(mpv) < 0)
@@ -237,19 +240,36 @@ void MpvObject::handle_mpv_event(mpv_event *event)
             }
         } else if (strcmp(prop->name, "volume") == 0) {
             if (prop->format == MPV_FORMAT_DOUBLE) {
-                QMetaObject::invokeMethod(this,"updateVolume");
+                double volume = *(double *)prop->data;
+                QMetaObject::invokeMethod(this,"updateVolume",Q_ARG(QVariant,volume));
+            }
+        } else if (strcmp(prop->name, "muted") == 0) {
+            if (prop->format == MPV_FORMAT_DOUBLE) {
+                double muted = *(double *)prop->data;
+                QMetaObject::invokeMethod(this,"updateMuted",Q_ARG(QVariant,muted));
             }
         } else if (strcmp(prop->name, "media-title") == 0) {
             if (prop->format == MPV_FORMAT_STRING) {
-                QMetaObject::invokeMethod(this,"setTitle");
+                char *title = *(char **)prop->data;
+                QMetaObject::invokeMethod(this,"setTitle",Q_ARG(QVariant,title));
             }
         } else if (strcmp(prop->name, "sub-text") == 0) {
-            QMetaObject::invokeMethod(this,"setSubtitles");
+            if (prop->format == MPV_FORMAT_STRING) {
+                char *subs = *(char **)prop->data;
+                QMetaObject::invokeMethod(this,"setSubtitles",Q_ARG(QVariant,subs));
+            }
         } else if (strcmp(prop->name, "demuxer-cache-duration") == 0) {
             if (prop->format == MPV_FORMAT_DOUBLE) {
                 double duration = *(double *)prop->data;
                 QMetaObject::invokeMethod(this,"setCachedDuration",Q_ARG(QVariant,duration));
             }
+        } else if (strcmp(prop->name, "playlist-pos") == 0) {
+            if (prop->format == MPV_FORMAT_DOUBLE) {
+                double pos = *(double *)prop->data;
+                QMetaObject::invokeMethod(this,"updatePrev",Q_ARG(QVariant,pos));
+            }
+        } else if (strcmp(prop->name, "pause") == 0) {
+            QMetaObject::invokeMethod(this,"updatePlayPause");
         }
         break;
     }

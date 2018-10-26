@@ -31,52 +31,6 @@ ApplicationWindow {
         }
     }
 
-    function updatePlayPauseIcon() {
-        var paused = player.getProperty("pause")
-        if (paused) {
-            playPauseButton.icon.source = "qrc:/player/icons/play.svg"
-        } else {
-            playPauseButton.icon.source = "qrc:/player/icons/pause.svg"
-        }
-    }
-
-    function updateVolume() {
-        var muted = player.getProperty("mute")
-        var volume = player.getProperty("volume")
-
-        if (muted || volume === 0) {
-            volumeButton.icon.source = "qrc:/player/icons/volume-mute.svg"
-        } else {
-            if (volume < 25) {
-                volumeButton.icon.source = "qrc:/player/icons/volume-down.svg"
-            } else {
-                volumeButton.icon.source = "qrc:/player/icons/volume-up.svg"
-            }
-        }
-    }
-
-    function updatePrev() {
-        var playlist_pos = player.getProperty("playlist-pos")
-        if (playlist_pos > 0) {
-            playlistPrevButton.visible = true
-            playlistPrevButton.width = playPauseButton.width
-        } else {
-            playlistPrevButton.visible = false
-            playlistPrevButton.width = 0
-        }
-    }
-
-    function updateControls() {
-        updatePrev()
-        updatePlayPauseIcon()
-        updateVolume()
-    }
-
-    function updatePlayPause() {
-        player.command(["cycle", "pause"])
-        updatePlayPauseIcon()
-    }
-
     function tracksMenuUpdate() {
         var tracks = player.getProperty("track-list/count")
         var track = 0
@@ -214,12 +168,51 @@ ApplicationWindow {
             player.command(["seek", skipto, "absolute"])
         }
 
-        function setTitle() {
-            titleLabel.text = player.getProperty("media-title")
+        function updatePrev(val) {
+            if (val != 0) {
+                playlistPrevButton.visible = true
+                playlistPrevButton.width = playPauseButton.width
+            } else {
+                playlistPrevButton.visible = false
+                playlistPrevButton.width = 0
+            }
         }
 
-        function setSubtitles() {
-            nativeSubs.text = player.getProperty("sub-text")
+        function updateVolume(volume) {
+            console.log(volume)
+            var muted = player.getProperty("mute")
+
+            if (muted || volume === 0) {
+                volumeButton.icon.source = "qrc:/player/icons/volume-mute.svg"
+            } else {
+                if (volume < 25) {
+                    volumeButton.icon.source = "qrc:/player/icons/volume-down.svg"
+                } else {
+                    volumeButton.icon.source = "qrc:/player/icons/volume-up.svg"
+                }
+            }
+        }
+
+        function updateMuted(muted) {
+            if (muted) {
+                volumeButton.icon.source = "qrc:/player/icons/volume-mute.svg"
+            }
+        }
+        function updatePlayPause() {
+            var paused = player.getProperty("pause")
+            if (paused) {
+                playPauseButton.icon.source = "qrc:/player/icons/play.svg"
+            } else {
+                playPauseButton.icon.source = "qrc:/player/icons/pause.svg"
+            }
+        }
+
+        function setTitle(title) {
+            titleLabel.text = title
+        }
+
+        function setSubtitles(subs) {
+            nativeSubs.text = subs
         }
 
         function isAnyMenuOpen() {
@@ -241,7 +234,6 @@ ApplicationWindow {
 
         function showControls() {
             if (!controlsBar.visible) {
-                updateControls()
                 //player.setOption("sub-margin-y", String(controlsBar.height + progressBar.height))
                 controlsBar.visible = true
                 controlsBackground.visible = true
@@ -307,7 +299,6 @@ ApplicationWindow {
             cursorShape: controlsBar.visible ? Qt.ArrowCursor : Qt.BlankCursor
             onClicked: {
                 player.command(["cycle", "pause"])
-                updateControls()
             }
             Timer {
                 id: mouseAreaPlayerTimer
@@ -429,7 +420,6 @@ ApplicationWindow {
                     text: "Play/Pause"
                     onTriggered: {
                         player.command(["cycle", "pause"])
-                        updateControls()
                     }
                     shortcut: String(keybinds.playPause)
                 }
@@ -437,7 +427,6 @@ ApplicationWindow {
                     text: "Rewind 10s"
                     onTriggered: {
                         player.command(["seek", "-10"])
-                        updateControls()
                     }
                     shortcut: keybinds.rewind10
                 }
@@ -445,7 +434,6 @@ ApplicationWindow {
                     text: "Forward 10s"
                     onTriggered: {
                         player.command(["seek", "10"])
-                        updateControls()
                     }
                     shortcut: keybinds.forward10
                 }
@@ -453,7 +441,6 @@ ApplicationWindow {
                     text: "Rewind 5s"
                     onTriggered: {
                         player.command(["seek", "-5"])
-                        updateControls()
                     }
                     shortcut: keybinds.rewind5
                 }
@@ -461,7 +448,6 @@ ApplicationWindow {
                     text: "Forward 5s"
                     onTriggered: {
                         player.command(["seek", "5"])
-                        updateControls()
                     }
                     shortcut: keybinds.forward5
                 }
@@ -469,7 +455,6 @@ ApplicationWindow {
                     text: "Forward Frame"
                     onTriggered: {
                         player.command(["frame-step"])
-                        updateControls()
                     }
                     shortcut: keybinds.forwardFrame
                 }
@@ -477,7 +462,6 @@ ApplicationWindow {
                     text: "Back Frame"
                     onTriggered: {
                         player.command(["frame-back-step"])
-                        updateControls()
                     }
                     shortcut: keybinds.backwardFrame
                 }
@@ -784,6 +768,12 @@ ApplicationWindow {
 
             radius: 5
             color: "transparent"
+            TextMetrics {
+                id: t_metrics
+                font.family: notoFont.name
+                font.pixelSize: nativeSubs.fontInfo.pixelSize
+                text: nativeSubs.text
+            }
 
             Label {
                 id: nativeSubs
@@ -799,9 +789,13 @@ ApplicationWindow {
                 wrapMode: Text.WrapAtWordBoundaryOrAnywhere
 
                 background: Rectangle {
+                    id: subsBackground
                     color: Qt.rgba(0, 0, 0, 0.6)
+                    width: t_metrics.tightBoundingRect.width + 8
                     anchors.left: parent.left
+                    anchors.leftMargin: (nativeSubtitles.width - t_metrics.tightBoundingRect.width) / 2
                     anchors.right: parent.right
+                    anchors.rightMargin: anchors.leftMargin
                 }
             }
         }
@@ -922,7 +916,6 @@ ApplicationWindow {
                 width: 0
                 onClicked: {
                     player.command(["playlist-prev"])
-                    updatePrev()
                 }
                 background: Rectangle {
                     color: "transparent"
@@ -939,7 +932,7 @@ ApplicationWindow {
                 anchors.bottom: parent.bottom
                 anchors.left: playlistPrevButton.right
                 onClicked: {
-                    updatePlayPause()
+                    player.command(["cycle", "pause"])
                 }
                 background: Rectangle {
                     color: "transparent"
@@ -974,7 +967,6 @@ ApplicationWindow {
                 anchors.left: playlistNextButton.right
                 onClicked: {
                     player.command(["cycle", "mute"])
-                    updateVolume()
                 }
                 background: Rectangle {
                     color: "transparent"
@@ -1001,7 +993,6 @@ ApplicationWindow {
                 onMoved: {
                     player.command(["set", "volume", Math.round(
                                         volumeBar.value).toString()])
-                    updateVolume()
                 }
 
                 handle: Rectangle {
