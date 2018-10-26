@@ -390,7 +390,7 @@ ApplicationWindow {
             Menu {
                 id: fileMenuBarItem
                 title: "File"
-                width: 100
+                width: 150
                 background: Rectangle {
                     implicitWidth: parent.width
                     implicitHeight: 10
