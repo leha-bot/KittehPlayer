@@ -5,6 +5,7 @@ import QtQuick.Layouts 1.11
 import QtQuick.Window 2.11
 import Qt.labs.settings 1.0
 import player 1.0
+import QtGraphicalEffects 1.0
 
 import "codes.js" as LanguageCodes
 
@@ -251,6 +252,12 @@ ApplicationWindow {
             property bool titleOnlyOnFullscreen: true
         }
 
+        Settings {
+            id: fun
+            category: "Fun"
+            property bool nyanCat: false
+        }
+
         Dialog {
             id: screenshotSaveDialog
             title: "Save Screenshot To"
@@ -363,6 +370,7 @@ ApplicationWindow {
             property string screenshot: "S"
             property string screenshotWithoutSubtitles: "Shift+S"
             property string fullScreenshot: "Ctrl+S"
+            property string nyanCat: "Ctrl+N"
         }
 
         MenuBar {
@@ -607,6 +615,14 @@ ApplicationWindow {
                     }
                     shortcut: keybinds.statsForNerds
                 }
+
+                Action {
+                    text: "Toggle Nyan Cat"
+                    onTriggered: {
+                        fun.nyanCat = ! fun.nyanCat
+                    }
+                    shortcut: keybinds.nyanCat
+                }
             }
 
             Action {
@@ -771,7 +787,7 @@ ApplicationWindow {
             anchors.left: menuBar.right
             anchors.top: parent.top
 
-            visible: ! appearance.titleOnlyOnFullscreen
+            visible: !appearance.titleOnlyOnFullscreen
             color: "transparent"
 
             Text {
@@ -799,7 +815,7 @@ ApplicationWindow {
         Rectangle {
             id: controlsBackground
             height: controlsBar.visible ? controlsBar.height + (progressBar.topPadding * 2)
-                                          - (progressBackground.height * 2) : 0
+                                          - (progressBackground.height * 2): 0
             anchors.bottom: parent.bottom
             anchors.left: parent.left
             anchors.right: parent.right
@@ -816,7 +832,8 @@ ApplicationWindow {
             anchors.left: controlsBar.left
             anchors.right: controlsBar.right
             anchors.bottom: controlsBackground.top
-
+            anchors.bottomMargin: fun.nyanCat ? 0 : nyanimation.height
+    
             radius: 5
             color: "transparent"
             TextMetrics {
@@ -867,7 +884,6 @@ ApplicationWindow {
             anchors.bottomMargin: 1
             visible: true
             color: "transparent"
-
             Rectangle {
                 id: settingsMenuBackground
                 anchors.fill: settingsMenu
@@ -899,20 +915,19 @@ ApplicationWindow {
                         onClicked: loadDialog.open()
                     }
                 }
-            }
+            }   
 
             Slider {
                 id: progressBar
                 to: 1
                 value: 0.0
-                palette.dark: "#f00"
                 anchors.bottom: parent.top
                 anchors.left: parent.left
                 anchors.right: parent.right
                 anchors.bottomMargin: 0
                 anchors.topMargin: progressBackground.height + handleRect.height
-
                 bottomPadding: 0
+                z: 10
 
                 onMoved: {
                     player.command(["seek", progressBar.value, "absolute"])
@@ -922,10 +937,10 @@ ApplicationWindow {
                     id: progressBackground
                     x: progressBar.leftPadding
                     y: progressBar.topPadding + progressBar.availableHeight / 2 - height / 2
-                    implicitHeight: (Screen.height / 256) < 2 ? 2 : Screen.height / 256
+                    implicitHeight: (Screen.height / 256) < (fun.nyanCat ? 12 : 2) ? (fun.nyanCat ? 12 : 2) : Screen.height / 256
                     width: progressBar.availableWidth
                     height: implicitHeight
-                    color: Qt.rgba(255, 255, 255, 0.4)
+                    color: Qt.rgba(255, 255, 255, 0.6)
 
                     Rectangle {
                         id: progressLength
@@ -933,10 +948,45 @@ ApplicationWindow {
                         height: parent.height
                         color: "red"
                         opacity: 1
+                        LinearGradient {
+                            height: parent.height
+                            visible: fun.nyanCat
+                            anchors.fill: parent
+                            gradient: Gradient {
+                                GradientStop {
+                                    position: 0.0
+                                    color: "#f00"
+                                }
+                                GradientStop {
+                                    position: 0.17
+                                    color: "#f90"
+                                }
+                                GradientStop {
+                                    position: 0.33
+                                    color: "#ff0"
+                                }
+                                GradientStop {
+                                    position: 0.50
+                                    color: "#3f0"
+                                }
+                                GradientStop {
+                                    position: 0.67
+                                    color: "#09f"
+                                }
+                                GradientStop {
+                                    position: 0.83
+                                    color: "#63f"
+                                }
+                                GradientStop {
+                                    position: 1
+                                    color: "#63f"
+                                }
+                            }
+                        }
                     }
                     Rectangle {
                         id: cachedLength
-                        z: 1
+                        z: 100
                         anchors.left: progressLength.right
                         anchors.leftMargin: progressBar.handle.width / 2
                         //anchors.left: progressBar.handle.horizontalCenter
@@ -949,16 +999,25 @@ ApplicationWindow {
                 }
 
                 handle: Rectangle {
-                    z: 2
                     id: handleRect
                     x: progressBar.leftPadding + progressBar.visualPosition
                        * (progressBar.availableWidth - width)
                     y: progressBar.topPadding + progressBar.availableHeight / 2 - height / 2
-                    implicitWidth: 12
                     implicitHeight: 12
+                    implicitWidth: 12
                     radius: 12
-                    color: "red"
-                    border.color: "red"
+                    color: fun.nyanCat ? "transparent" : "red"
+                    //border.color: "red"
+                    AnimatedImage {
+                        z: 100
+                        visible: fun.nyanCat
+                        paused: progressBar.pressed
+                        height: 24
+                        id: nyanimation
+                        anchors.centerIn: parent
+                        source: "qrc:/player/icons/nyancat.gif"
+                        fillMode: Image.PreserveAspectFit
+                    }
                 }
             }
 
