@@ -233,10 +233,22 @@ ApplicationWindow {
                 //player.setOption("sub-margin-y", String(controlsBar.height + progressBar.height))
                 controlsBar.visible = true
                 controlsBackground.visible = true
-                titleBar.visible = true
+                if (appearance.titleOnlyOnFullscreen) {
+                    if (mainWindow.visibility == Window.FullScreen) {
+                        titleBar.visible = true
+                    }
+                } else {
+                    titleBar.visible = true
+                }
                 titleBackground.visible = true
                 menuBar.visible = true
             }
+        }
+
+        Settings {
+            id: appearance
+            category: "Appearance"
+            property bool titleOnlyOnFullscreen: true
         }
 
         Dialog {
@@ -759,7 +771,7 @@ ApplicationWindow {
             anchors.left: menuBar.right
             anchors.top: parent.top
 
-            visible: true
+            visible: ! appearance.titleOnlyOnFullscreen
             color: "transparent"
 
             Text {
