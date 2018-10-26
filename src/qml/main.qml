@@ -153,11 +153,6 @@ ApplicationWindow {
             progressBar.value = val
         }
 
-        function setCachedDuration(val) {
-            cachedLength.width = progressBar.width / progressBar.to
-                    * (val - progressBar.value) - (progressBar.handle.width / 2)
-        }
-
         function skipToNinth(val) {
             console.log(val)
             var skipto = 0
@@ -219,10 +214,11 @@ ApplicationWindow {
             return subtitlesMenu.visible || settingsMenu.visible
                     || fileMenuBarItem.opened || playbackMenuBarItem.opened
                     || viewMenuBarItem.opened || tracksMenuBarItem.opened
+                    || screenshotSaveDialog.visible
         }
 
-        function hideControls() {
-            if (!isAnyMenuOpen()) {
+        function hideControls(force) {
+            if (!isAnyMenuOpen() || force) {
                 //player.setOption("sub-margin-y", "22")
                 controlsBar.visible = false
                 controlsBackground.visible = false
@@ -240,6 +236,22 @@ ApplicationWindow {
                 titleBar.visible = true
                 titleBackground.visible = true
                 menuBar.visible = true
+            }
+        }
+
+        Dialog {
+            id: screenshotSaveDialog
+            title: "Save Screenshot To"
+            standardButtons: StandardButton.Cancel | StandardButton.Open
+            onAccepted: {
+                player.grabToImage(function (result) {
+                    result.saveToFile(screenshotFile.text)
+                    nativeSubs.visible = true
+                })
+            }
+            TextField {
+                id: screenshotFile
+                placeholderText: qsTr("~/screenshot.jpg")
             }
         }
 
@@ -331,11 +343,14 @@ ApplicationWindow {
             property string statsForNerds: "I"
             property string forwardFrame: "."
             property string backwardFrame: ","
-            property string cycleSub: "S"
-            property string cycleSubBackwards: "Shift+S"
+            property string cycleSub: "Alt+S"
+            property string cycleSubBackwards: "Alt+Shift+S"
             property string cycleAudio: "A"
             property string cycleVideo: "V"
             property string cycleVideoAspect: "Shift+A"
+            property string screenshot: "S"
+            property string screenshotWithoutSubtitles: "Shift+S"
+            property string fullScreenshot: "Ctrl+S"
         }
 
         MenuBar {
@@ -394,6 +409,30 @@ ApplicationWindow {
                     text: "Open URI/URL"
                     onTriggered: loadDialog.open()
                     shortcut: keybinds.openURI
+                }
+                Action {
+                    text: "Screenshot"
+                    onTriggered: {
+                        player.hideControls(true)
+                        screenshotSaveDialog.open()
+                    }
+                    shortcut: keybinds.screenshot
+                }
+                Action {
+                    text: "Screenshot w/o subtitles"
+                    onTriggered: {
+                        player.hideControls(true)
+                        nativeSubs.visible = false
+                        screenshotSaveDialog.open()
+                    }
+                    shortcut: keybinds.screenshotWithoutSubtitles
+                }
+                Action {
+                    text: "Full Screenshot"
+                    onTriggered: {
+                        screenshotSaveDialog.open()
+                    }
+                    shortcut: keybinds.fullScreenshot
                 }
                 Action {
                     text: "Exit"
@@ -793,11 +832,16 @@ ApplicationWindow {
                     color: Qt.rgba(0, 0, 0, 0.6)
                     width: t_metrics.tightBoundingRect.width + 8
                     anchors.left: parent.left
-                    anchors.leftMargin: (nativeSubtitles.width - t_metrics.tightBoundingRect.width) / 2
+                    anchors.leftMargin: (nativeSubtitles.width
+                                         - t_metrics.tightBoundingRect.width) / 2
                     anchors.right: parent.right
                     anchors.rightMargin: anchors.leftMargin
                 }
             }
+        }
+
+        function setCachedDuration(val) {
+            cachedLength.width = (progressBar.width / progressBar.to) * val
         }
 
         Rectangle {
@@ -872,22 +916,24 @@ ApplicationWindow {
                     color: Qt.rgba(255, 255, 255, 0.4)
 
                     Rectangle {
+                        id: progressLength
                         width: progressBar.visualPosition * parent.width
                         height: parent.height
                         color: "red"
                         opacity: 1
                     }
-                }
-                Rectangle {
-                    id: cachedLength
-                    z: 1
-                    //anchors.left: progressBar.handle.right
-                    anchors.left: progressBar.handle.horizontalCenter
-                    anchors.bottom: progressBar.background.bottom
-                    anchors.top: progressBar.background.top
-                    height: progressBar.background.height
-                    color: "white"
-                    opacity: 0.8
+                    Rectangle {
+                        id: cachedLength
+                        z: 1
+                        anchors.left: progressLength.right
+                        anchors.leftMargin: progressBar.handle.width / 2
+                        //anchors.left: progressBar.handle.horizontalCenter
+                        anchors.bottom: progressBar.background.bottom
+                        anchors.top: progressBar.background.top
+                        height: progressBar.background.height
+                        color: "white"
+                        opacity: 0.8
+                    }
                 }
 
                 handle: Rectangle {

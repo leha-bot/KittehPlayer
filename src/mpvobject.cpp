@@ -126,7 +126,8 @@ MpvObject::MpvObject(QQuickItem * parent)
     //mpp_set_option_string(mpv, "no-sub-ass", "yes)
 
     mpv_set_option_string(mpv, "slang", "en");
-    /*mpv_set_option_string(mpv, "sub-font", "Noto Sans");
+    mpv_set_option_string(mpv, "sub-font", "Noto Sans");
+    mpv_set_option_string(mpv, "sub-font-size", "24");
     mpv_set_option_string(mpv, "sub-ass-override", "force");
     mpv_set_option_string(mpv, "sub-ass", "off");
     mpv_set_option_string(mpv, "sub-border-size", "0");
@@ -134,7 +135,7 @@ MpvObject::MpvObject(QQuickItem * parent)
     mpv_set_option_string(mpv, "sub-scale-by-window", "on");
     mpv_set_option_string(mpv, "sub-scale-with-window", "on");
 
-    mpv_set_option_string(mpv, "sub-back-color", "#C0080808");*/
+    mpv_set_option_string(mpv, "sub-back-color", "0.0/0.0/0.0/0.0");
 
     mpv_set_option_string(mpv, "config", "yes");
     //mpv_set_option_string(mpv, "sub-visibility", "no");
