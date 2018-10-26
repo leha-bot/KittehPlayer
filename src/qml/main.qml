@@ -814,7 +814,7 @@ ApplicationWindow {
 
         Rectangle {
             id: controlsBackground
-            height: controlsBar.visible ? controlsBar.height + (progressBar.topPadding * 2)
+            height: controlsBar.visible ? controlsBar.height + progressBackground.height + (progressBar.topPadding * 2)
                                           - (progressBackground.height * 2): 0
             anchors.bottom: parent.bottom
             anchors.left: parent.left
@@ -927,7 +927,6 @@ ApplicationWindow {
                 anchors.bottomMargin: 0
                 anchors.topMargin: progressBackground.height + handleRect.height
                 bottomPadding: 0
-                z: 10
 
                 onMoved: {
                     player.command(["seek", progressBar.value, "absolute"])
@@ -986,7 +985,7 @@ ApplicationWindow {
                     }
                     Rectangle {
                         id: cachedLength
-                        z: 100
+                        z: 10
                         anchors.left: progressLength.right
                         anchors.leftMargin: progressBar.handle.width / 2
                         //anchors.left: progressBar.handle.horizontalCenter
@@ -1009,10 +1008,9 @@ ApplicationWindow {
                     color: fun.nyanCat ? "transparent" : "red"
                     //border.color: "red"
                     AnimatedImage {
-                        z: 100
                         visible: fun.nyanCat
                         paused: progressBar.pressed
-                        height: 24
+                        height: 30
                         id: nyanimation
                         anchors.centerIn: parent
                         source: "qrc:/player/icons/nyancat.gif"
