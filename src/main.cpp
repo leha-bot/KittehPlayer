@@ -6,7 +6,9 @@
 
 #include "config.h"
 #include "mpvobject.h"
-
+#ifdef QRC_SOURCE_PATH
+#include "runtimeqml/runtimeqml.h"
+#endif
 
 #include <QApplication>
 
@@ -59,6 +61,15 @@ view->setSource(QUrl("qrc:///player/main.qml"));
 view->show();*/
 
     QQmlApplicationEngine engine;
-    engine.load(QUrl(QStringLiteral("qrc:///player/main.qml")));
+#ifdef QRC_SOURCE_PATH
+RuntimeQML *rt = new RuntimeQML(&engine, QRC_SOURCE_PATH"/qml.qrc");
+
+rt->setAutoReload(true);
+rt->setMainQmlFilename("main.qml");
+rt->reload();
+#else
+engine.load(QUrl(QStringLiteral("qrc:///player/main.qml")));
+#endif
+
     return app.exec();
 }

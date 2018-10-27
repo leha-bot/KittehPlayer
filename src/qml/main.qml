@@ -43,7 +43,6 @@ ApplicationWindow {
         var sid = player.getProperty("sid")
         var vid = player.getProperty("vid")
 
-        console.log("Updating Track Menu, Total Tracks: " + tracks)
         for (track = 0; track <= tracks; track++) {
             var trackID = player.getProperty("track-list/" + track + "/id")
             var trackType = player.getProperty("track-list/" + track + "/type")
@@ -155,12 +154,10 @@ ApplicationWindow {
         }
 
         function skipToNinth(val) {
-            console.log(val)
             var skipto = 0
             if (val != 0) {
                 skipto = Math.floor(progressBar.to / 9 * val)
             }
-            console.log(skipto)
             player.command(["seek", skipto, "absolute"])
         }
 
@@ -175,7 +172,6 @@ ApplicationWindow {
         }
 
         function updateVolume(volume) {
-            console.log(volume)
             var muted = player.getProperty("mute")
 
             if (muted || volume === 0) {
@@ -405,7 +401,7 @@ ApplicationWindow {
             }
 
             background: Rectangle {
-                implicitWidth: parent.width
+                width: parent.width
                 implicitHeight: 10
                 color: "black"
                 opacity: 0.6
@@ -468,7 +464,7 @@ ApplicationWindow {
             Menu {
                 id: playbackMenuBarItem
                 title: "Playback"
-                width: 100
+                width: 150
                 background: Rectangle {
                     implicitWidth: parent.width
                     implicitHeight: 10
@@ -476,7 +472,7 @@ ApplicationWindow {
                     opacity: 0.6
                 }
                 delegate: CustomMenuItem {
-                    width: 100
+                    width: parent.width
                 }
 
                 Action {
@@ -569,7 +565,7 @@ ApplicationWindow {
             Menu {
                 id: tracksMenuBarItem
                 title: "Tracks"
-                width: 150
+                width: 140
                 background: Rectangle {
                     implicitWidth: parent.width
                     implicitHeight: 10
@@ -577,7 +573,7 @@ ApplicationWindow {
                     opacity: 0.6
                 }
                 delegate: CustomMenuItem {
-                    width: 100
+                    width: parent.width
                 }
                 Action {
                     text: "Track Menu"
@@ -621,7 +617,7 @@ ApplicationWindow {
             Menu {
                 id: viewMenuBarItem
                 title: "View"
-                width: 100
+                width: 120
                 background: Rectangle {
                     implicitWidth: parent.width
                     implicitHeight: 10
@@ -629,6 +625,7 @@ ApplicationWindow {
                     opacity: 0.6
                 }
                 delegate: CustomMenuItem {
+                    width: parent.width
                 }
 
                 Action {
@@ -716,8 +713,6 @@ ApplicationWindow {
             height: childrenRect.height
             visible: false
             anchors.centerIn: player
-            anchors.right: player.right
-            anchors.bottom: progressBar.top
             border.color: "black"
             border.width: 2
 
