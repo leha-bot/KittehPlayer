@@ -12,3 +12,9 @@ Makefile
 linuxdeploy*
 other_libs
 sffmpeg
+*.qmake.stash
+*.qmlc
+*.jsc
+src_qml*
+qmlcache*
+qrc_src*

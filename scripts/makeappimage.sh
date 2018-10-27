@@ -33,11 +33,11 @@ cp /usr/bin/appimageupdatetool appdir/usr/bin
 
 cp -f /usr/lib/*/libjack.so.0 appdir/usr/lib
 
-sudo pip3 install pyinstaller
-sudo wget https://yt-dl.org/downloads/latest/youtube-dl -O ytdl.zip
-unzip ytdl.zip
-pyinstaller __main__.py -n youtube-dl --onefile
-cp dist/youtube-dl appdir/usr/bin
+sudo pip3 install pyinstaller || true
+sudo wget https://yt-dl.org/downloads/latest/youtube-dl -O ytdl.zip || true
+unzip ytdl.zip || true
+pyinstaller __main__.py -n youtube-dl --onefile || true
+cp dist/youtube-dl appdir/usr/bin || true
 
 export UPD_INFO="gh-releases-zsync|NamedKitten|KittehPlayer|continuous|KittehPlayer-$ARCH.AppImage.zsync"
 ./linuxdeploy-x86_64.AppImage --appdir appdir --plugin qt --output appimage -v 3
