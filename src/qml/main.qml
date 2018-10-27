@@ -5,6 +5,7 @@ import QtQuick.Layouts 1.11
 import QtQuick.Window 2.11
 import Qt.labs.settings 1.0
 import player 1.0
+import QtGraphicalEffects 1.0
 
 import "codes.js" as LanguageCodes
 

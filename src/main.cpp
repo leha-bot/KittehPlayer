@@ -46,8 +46,9 @@ int main( int argc, char *argv[] )
     dpms.start("xset", QStringList() << "-dpms");
 
 
+    QString newpath = QProcessEnvironment::systemEnvironment().value("APPDIR", "") + "/usr/bin:" + QProcessEnvironment::systemEnvironment().value("PATH", "");
     
-
+    setenv("Path", newpath.toUtf8().constData(), 1);
     setenv("QT_QUICK_CONTROLS_STYLE","Desktop",1);
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     qmlRegisterType<MpvObject>("player", 1, 0, "MpvObject");
