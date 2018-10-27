@@ -146,11 +146,11 @@ ApplicationWindow {
 
         function setProgressBarEnd(val) {
             progressBar.to = val
-        }
+     }
 
         function setProgressBarValue(val) {
             timeLabel.text = createTimestamp(val) + " / " + createTimestamp(
-                        progressBar.to)
+                        progressBar.to) + " (" + parseFloat(player.getProperty("speed").toFixed(2)) + "x)"
             progressBar.value = val
         }
 
@@ -270,7 +270,7 @@ ApplicationWindow {
             }
             TextField {
                 id: screenshotFile
-                placeholderText: qsTr("~/screenshot.jpg")
+                placeholderText: "~/screenshot.jpg"
             }
         }
 
@@ -371,6 +371,10 @@ ApplicationWindow {
             property string screenshotWithoutSubtitles: "Shift+S"
             property string fullScreenshot: "Ctrl+S"
             property string nyanCat: "Ctrl+N"
+            property string decreaseSpeedBy10Percent: "["
+            property string increaseSpeedBy10Percent: "]"
+            property string halveSpeed: "{"
+            property string doubleSpeed: "}"
         }
 
         MenuBar {
@@ -509,6 +513,34 @@ ApplicationWindow {
                         player.command(["seek", "5"])
                     }
                     shortcut: keybinds.forward5
+                }
+                Action {
+                    text: "Speed -10%"
+                    onTriggered: {
+                        player.command(["multiply", "speed", "1/1.1"])
+                    }
+                    shortcut: keybinds.decreaseSpeedBy10Percent
+                }
+                Action {
+                    text: "Speed +10%"
+                    onTriggered: {
+                        player.command(["multiply", "speed", "1.1"])
+                    }
+                    shortcut: keybinds.increaseSpeedBy10Percent
+                }
+                Action {
+                    text: "Halve Speed"
+                    onTriggered: {
+                        player.command(["multiply", "speed", "0.5"])
+                    }
+                    shortcut: keybinds.halveSpeed
+                }
+                Action {
+                    text: "Double Speed"
+                    onTriggered: {
+                        player.command(["multiply", "speed", "2.0"])
+                    }
+                    shortcut: keybinds.doubleSpeed
                 }
                 Action {
                     text: "Forward Frame"
@@ -832,7 +864,7 @@ ApplicationWindow {
             anchors.left: controlsBar.left
             anchors.right: controlsBar.right
             anchors.bottom: controlsBackground.top
-            anchors.bottomMargin: fun.nyanCat ? 0 : nyanimation.height
+            anchors.bottomMargin: 0
     
             radius: 5
             color: "transparent"
@@ -925,7 +957,7 @@ ApplicationWindow {
                 anchors.left: parent.left
                 anchors.right: parent.right
                 anchors.bottomMargin: 0
-                anchors.topMargin: progressBackground.height + handleRect.height
+                anchors.topMargin: progressBackground.height
                 bottomPadding: 0
 
                 onMoved: {
