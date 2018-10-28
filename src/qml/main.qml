@@ -1,4 +1,4 @@
-import QtQuick 2.11
+ import QtQuick 2.11
 import QtQuick.Controls 2.4
 import QtQuick.Dialogs 1.3
 import QtQuick.Layouts 1.11
@@ -210,8 +210,9 @@ ApplicationWindow {
         function isAnyMenuOpen() {
             return subtitlesMenu.visible || settingsMenu.visible
                     || fileMenuBarItem.opened || playbackMenuBarItem.opened
-                    || viewMenuBarItem.opened || tracksMenuBarItem.opened
-                    || screenshotSaveDialog.visible
+                    || viewMenuBarItem.opened || audioMenuBarItem.opened
+                    || screenshotSaveDialog.visible || videoMenuBarItem.opened
+                    || subtitleMenuBarItem.opened
         }
 
         function hideControls(force) {
@@ -371,6 +372,8 @@ ApplicationWindow {
             property string increaseSpeedBy10Percent: "]"
             property string halveSpeed: "{"
             property string doubleSpeed: "}"
+            property string increaseVolume: "*"
+            property string decreaseVolume: "/"
         }
 
         MenuBar {
@@ -552,19 +555,11 @@ ApplicationWindow {
                     }
                     shortcut: keybinds.backwardFrame
                 }
-                Action {
-                    text: "Switch Aspect Ratio"
-                    onTriggered: {
-                        player.command(
-                                    ["cycle-values", "video-aspect", "16:9", "4:3", "2.35:1", "-1"])
-                    }
-                    shortcut: keybinds.cycleVideoAspect
-                }
             }
 
             Menu {
-                id: tracksMenuBarItem
-                title: "Tracks"
+                id: audioMenuBarItem
+                title: "Audio"
                 width: 140
                 background: Rectangle {
                     implicitWidth: parent.width
@@ -576,13 +571,61 @@ ApplicationWindow {
                     width: parent.width
                 }
                 Action {
-                    text: "Track Menu"
+                    text: "Cycle Audio"
                     onTriggered: {
-                        tracksMenuUpdate()
-                        subtitlesMenu.visible = !subtitlesMenu.visible
-                        subtitlesMenuBackground.visible = !subtitlesMenuBackground.visible
+                        player.command(["cycle", "audio"])
                     }
-                    shortcut: keybinds.tracks
+                    shortcut: keybinds.cycleAudio
+                }
+                Action {
+                    text: "Increase Volume"
+                    onTriggered: {
+                        player.command(["add", "volume", "2"])
+                    }
+                    shortcut: keybinds.cycleAudio
+                }
+                Action {
+                    text: "Decrease Volume"
+                    onTriggered: {
+                        player.command(["add", "volume", "-2"])
+                    }
+                    shortcut: keybinds.cycleAudio
+                }
+            }
+
+            Menu {
+                id: videoMenuBarItem
+                title: "Video"
+                width: 140
+                background: Rectangle {
+                    implicitWidth: parent.width
+                    implicitHeight: 10
+                    color: "black"
+                    opacity: 0.6
+                }
+                delegate: CustomMenuItem {
+                    width: parent.width
+                }
+                Action {
+                    text: "Cycle Video"
+                    onTriggered: {
+                        player.command(["cycle", "video"])
+                    }
+                    shortcut: keybinds.cycleVideo
+                }
+            }
+            Menu {
+                id: subsMenuBarItem
+                title: "Subtitles"
+                width: 140
+                background: Rectangle {
+                    implicitWidth: parent.width
+                    implicitHeight: 10
+                    color: "black"
+                    opacity: 0.6
+                }
+                delegate: CustomMenuItem {
+                    width: parent.width
                 }
                 Action {
                     text: "Cycle Subs"
@@ -597,20 +640,6 @@ ApplicationWindow {
                         player.command(["cycle", "sub", "down"])
                     }
                     shortcut: keybinds.cycleSubBackwards
-                }
-                Action {
-                    text: "Cycle Audio"
-                    onTriggered: {
-                        player.command(["cycle", "audio"])
-                    }
-                    shortcut: keybinds.cycleAudio
-                }
-                Action {
-                    text: "Cycle Video"
-                    onTriggered: {
-                        player.command(["cycle", "video"])
-                    }
-                    shortcut: keybinds.cycleVideo
                 }
             }
 
@@ -634,6 +663,15 @@ ApplicationWindow {
                         toggleFullscreen()
                     }
                     shortcut: keybinds.fullscreen
+                }
+                Action {
+                    text: "Track Menu"
+                    onTriggered: {
+                        tracksMenuUpdate()
+                        subtitlesMenu.visible = !subtitlesMenu.visible
+                        subtitlesMenuBackground.visible = !subtitlesMenuBackground.visible
+                    }
+                    shortcut: keybinds.tracks
                 }
 
                 Action {
@@ -897,7 +935,7 @@ ApplicationWindow {
         }
 
         function setCachedDuration(val) {
-            cachedLength.width = (progressBar.width / progressBar.to) * val
+            cachedLength.width = ((progressBar.width / progressBar.to) * val) - progressLength.width 
         }
 
         Rectangle {
@@ -1014,7 +1052,7 @@ ApplicationWindow {
                         id: cachedLength
                         z: 10
                         anchors.left: progressLength.right
-                        anchors.leftMargin: progressBar.handle.width / 2
+                        anchors.leftMargin: progressBar.handle.width -2
                         //anchors.left: progressBar.handle.horizontalCenter
                         anchors.bottom: progressBar.background.bottom
                         anchors.top: progressBar.background.top

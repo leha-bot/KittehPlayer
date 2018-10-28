@@ -4,5 +4,6 @@
         "fstream": "cpp",
         "typeinfo": "cpp",
         "qprocess": "cpp"
-    }
+    },
+    "editor.fontFamily": "'Lato', 'Source Code Pro'"
 }
