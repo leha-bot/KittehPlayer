@@ -374,6 +374,7 @@ ApplicationWindow {
             property string doubleSpeed: "}"
             property string increaseVolume: "*"
             property string decreaseVolume: "/"
+            property string mute: "m"
         }
 
         MenuBar {
@@ -582,14 +583,21 @@ ApplicationWindow {
                     onTriggered: {
                         player.command(["add", "volume", "2"])
                     }
-                    shortcut: keybinds.cycleAudio
+                    shortcut: keybinds.increaseVolume
                 }
                 Action {
                     text: "Decrease Volume"
                     onTriggered: {
                         player.command(["add", "volume", "-2"])
                     }
-                    shortcut: keybinds.cycleAudio
+                    shortcut: keybinds.decreaseVolume
+                }
+                Action {
+                    text: "Mute"
+                    onTriggered: {
+                        player.command(["cycle", "mute"])
+                    }
+                    shortcut: keybinds.mute
                 }
             }
 

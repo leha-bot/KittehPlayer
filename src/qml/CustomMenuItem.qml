@@ -14,7 +14,7 @@ MenuItem {
     implicitHeight: 20
 
     contentItem: Text {
-        rightPadding: menuItem.arrow.width
+        rightPadding: menuItem.indicator.width
         text: menuItem.text
         font.family: notoFont.name
         opacity: 1
