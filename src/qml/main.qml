@@ -212,7 +212,7 @@ ApplicationWindow {
                     || fileMenuBarItem.opened || playbackMenuBarItem.opened
                     || viewMenuBarItem.opened || audioMenuBarItem.opened
                     || screenshotSaveDialog.visible || videoMenuBarItem.opened
-                    || subtitleMenuBarItem.opened
+                    || subsMenuBarItem.opened
         }
 
         function hideControls(force) {
