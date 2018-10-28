@@ -15,7 +15,7 @@ ApplicationWindow {
     visible: true
     width: 720
     height: 480
-
+    color: "white"
     FontLoader {
         id: notoFont
         source: "fonts/NotoSans.ttf"

@@ -25,6 +25,7 @@
 
 int main( int argc, char *argv[] )
 {
+    setenv("QT_QUICK_CONTROLS_STYLE","Desktop",1);
     QApplication app(argc, argv);
     app.setOrganizationName("KittehPlayer");
     app.setOrganizationDomain("namedkitten.pw");
@@ -48,8 +49,8 @@ int main( int argc, char *argv[] )
 
     QString newpath = QProcessEnvironment::systemEnvironment().value("APPDIR", "") + "/usr/bin:" + QProcessEnvironment::systemEnvironment().value("PATH", "");
     
+    qDebug() << newpath;
     setenv("Path", newpath.toUtf8().constData(), 1);
-    setenv("QT_QUICK_CONTROLS_STYLE","Desktop",1);
     QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     qmlRegisterType<MpvObject>("player", 1, 0, "MpvObject");
 
