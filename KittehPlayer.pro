@@ -1,9 +1,8 @@
 TARGET = KittehPlayer
 
 TEMPLATE = app
-QT += qml quickcontrols2 widgets
-
-SOURCES += src/main.cpp src/mpvobject.cpp
+QT += qml quickcontrols2 widgets core-private gui-private
+SOURCES += src/main.cpp src/mpvobject.cpp src/filesavedialog.cpp src/fileopendialog.cpp
 
 CONFIG += release
 CONFIG+=qtquickcompiler
@@ -13,7 +12,7 @@ PKGCONFIG += mpv
 RESOURCES += src/qml/qml.qrc
 
 unix {
-    isEmpty(PREFIX) {
+    isEmpty {
         PREFIX = /usr
     }
 
@@ -30,7 +29,7 @@ unix {
 
 INSTALLS += target
 
-HEADERS += src/mpvobject.h src/config.h
+HEADERS += src/mpvobject.h src/config.h src/filesavedialog.h src/fileopendialog.h
 
 
 DISTFILES += KittehPlayer.desktop KittehPlayer.png README.md LICENSE.txt

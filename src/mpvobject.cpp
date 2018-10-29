@@ -8,6 +8,9 @@
 
 #include <QObject>
 #include <QtGlobal>
+#include <QtCore>
+#include <QApplication>
+
 #include <QOpenGLContext>
 
 #include <QGuiApplication>
@@ -209,6 +212,12 @@ void MpvObject::setProperty(const QString& name, const QVariant& value)
 void MpvObject::setOption(const QString& name, const QVariant& value)
 {
     mpv::qt::set_option_variant(mpv, name, value);
+}
+
+void MpvObject::launchAboutQt()
+{
+    QApplication *qapp = qobject_cast<QApplication *>(QCoreApplication::instance());
+    qapp->aboutQt();
 }
 
 void MpvObject::on_mpv_events()

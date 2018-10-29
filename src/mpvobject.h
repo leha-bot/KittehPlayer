@@ -39,6 +39,7 @@ public:
 
 
 public slots:
+    void launchAboutQt();
     void command(const QVariant& params);
     void setProperty(const QString& name, const QVariant& value);
     void setOption(const QString& name, const QVariant& value);

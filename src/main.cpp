@@ -10,6 +10,9 @@
 #include "runtimeqml/runtimeqml.h"
 #endif
 
+#include "fileopendialog.h"
+#include "filesavedialog.h"
+
 #include <QApplication>
 
 #include <QGuiApplication>
@@ -25,6 +28,7 @@
 
 int main( int argc, char *argv[] )
 {
+    setenv("QT_QPA_PLATFORMTHEME", "gtk3", 0);
     setenv("QT_QUICK_CONTROLS_STYLE","Desktop",1);
     QApplication app(argc, argv);
     app.setOrganizationName("KittehPlayer");
@@ -51,9 +55,11 @@ int main( int argc, char *argv[] )
     
     qDebug() << newpath;
     setenv("Path", newpath.toUtf8().constData(), 1);
-    QCoreApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+    QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
+    QApplication::setAttribute(Qt::AA_UseSoftwareOpenGL	);
     qmlRegisterType<MpvObject>("player", 1, 0, "MpvObject");
-
+    qmlRegisterType<FileOpenDialog>("player", 1, 0, "FileOpenDialog");
+    qmlRegisterType<FileSaveDialog>("player", 1, 0, "FileSaveDialog");
 
     std::setlocale(LC_NUMERIC, "C");
 

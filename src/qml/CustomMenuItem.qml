@@ -17,6 +17,7 @@ MenuItem {
         rightPadding: menuItem.indicator.width
         text: menuItem.text
         font.family: notoFont.name
+        font.bold: menuItem.highlighted
         opacity: 1
         color: menuItem.highlighted ? "#5a50da" : "white"
         horizontalAlignment: Text.AlignLeft

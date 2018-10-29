@@ -212,7 +212,7 @@ ApplicationWindow {
                     || fileMenuBarItem.opened || playbackMenuBarItem.opened
                     || viewMenuBarItem.opened || audioMenuBarItem.opened
                     || screenshotSaveDialog.visible || videoMenuBarItem.opened
-                    || subsMenuBarItem.opened
+                    || subsMenuBarItem.opened || aboutMenuBarItem.opened
         }
 
         function hideControls(force) {
@@ -256,26 +256,26 @@ ApplicationWindow {
             property bool nyanCat: false
         }
 
-        Dialog {
+        FileSaveDialog {
             id: screenshotSaveDialog
             title: "Save Screenshot To"
-            standardButtons: StandardButton.Cancel | StandardButton.Open
+            filename: "screenshot.png"
+            nameFilters: ["Images (*.png)", "All files (*)"]
             onAccepted: {
                 player.grabToImage(function (result) {
-                    result.saveToFile(screenshotFile.text)
+                    var filepath = String(screenshotSaveDialog.fileUrl).replace(
+                                "file://", '')
+                    console.log("Saving screenshot to: " + filepath)
+                    result.saveToFile(filepath)
                     nativeSubs.visible = true
                 })
             }
-            TextField {
-                id: screenshotFile
-                placeholderText: "~/screenshot.jpg"
-            }
         }
 
-        FileDialog {
+        FileOpenDialog {
             id: fileDialog
             title: "Please choose a file"
-            folder: shortcuts.home
+            nameFilters: ["All files (*)"]
             onAccepted: {
                 player.command(["loadfile", String(fileDialog.fileUrl)])
                 fileDialog.close()
@@ -327,7 +327,9 @@ ApplicationWindow {
             hoverEnabled: true
             cursorShape: controlsBar.visible ? Qt.ArrowCursor : Qt.BlankCursor
             onClicked: {
-                if (clickToPause) { player.command(["cycle", "pause"]) }
+                if (appearance.clickToPause) {
+                    player.command(["cycle", "pause"])
+                }
             }
             Timer {
                 id: mouseAreaPlayerTimer
@@ -381,15 +383,22 @@ ApplicationWindow {
         MenuBar {
             id: menuBar
             //width: parent.width
-            height: Screen.height / 24
+            height: Screen.height / 32
             delegate: MenuBarItem {
                 id: menuBarItem
 
+                padding: 4
+                topPadding: padding
+                leftPadding: padding
+                rightPadding: padding
+                bottomPadding: padding
+
                 contentItem: Text {
+                    id: menuBarItemText
                     text: menuBarItem.text
                     font.family: notoFont.name
                     font.pixelSize: 14
-                    renderType: Text.NativeRendering
+                    font.bold: menuBarItem.highlighted
                     opacity: 1
                     color: menuBarItem.highlighted ? "#5a50da" : "white"
                     horizontalAlignment: Text.AlignLeft
@@ -700,6 +709,27 @@ ApplicationWindow {
                     shortcut: keybinds.nyanCat
                 }
             }
+            Menu {
+                id: aboutMenuBarItem
+                title: "About"
+                width: 120
+                background: Rectangle {
+                    implicitWidth: parent.width
+                    implicitHeight: 10
+                    color: "black"
+                    opacity: 0.6
+                }
+                delegate: CustomMenuItem {
+                    width: parent.width
+                }
+
+                Action {
+                    text: "Fullscreen"
+                    onTriggered: {
+                        player.launchAboutQt()
+                    }
+                }
+            }
 
             Action {
                 onTriggered: player.skipToNinth(parseInt(shortcut))
@@ -771,7 +801,6 @@ ApplicationWindow {
                 color: "white"
                 font.family: notoFont.name
                 font.pixelSize: 14
-                renderType: Text.NativeRendering
                 horizontalAlignment: Text.AlignHCenter
                 opacity: 1
             }
@@ -797,7 +826,6 @@ ApplicationWindow {
                 font.family: notoFont.name
                 font.pixelSize: 14
                 anchors.top: audioList.bottom
-                renderType: Text.NativeRendering
                 horizontalAlignment: Text.AlignHCenter
                 opacity: 1
             }
@@ -823,7 +851,6 @@ ApplicationWindow {
                 font.family: notoFont.name
                 font.pixelSize: 14
                 anchors.top: subList.bottom
-                renderType: Text.NativeRendering
                 horizontalAlignment: Text.AlignHCenter
                 opacity: 1
             }
@@ -873,15 +900,12 @@ ApplicationWindow {
                 anchors.left: parent.left
                 anchors.leftMargin: 10
                 anchors.bottom: parent.bottom
-                anchors.bottomMargin: 4
-                anchors.topMargin: 4
+                topPadding: 4
+                bottomPadding: 4
                 anchors.top: parent.top
                 font.family: notoFont.name
-                fontSizeMode: Text.Fit
-                minimumPixelSize: 10
-                font.pixelSize: 72
-                verticalAlignment: Text.AlignVCenter
-                renderType: Text.NativeRendering
+                font.pixelSize: 14
+                font.bold: true
                 opacity: 1
             }
         }
@@ -912,7 +936,7 @@ ApplicationWindow {
             radius: 5
             color: "transparent"
             TextMetrics {
-                id: t_metrics
+                id: subTextMetrics
                 font.family: notoFont.name
                 font.pixelSize: nativeSubs.fontInfo.pixelSize
                 text: nativeSubs.text
@@ -925,7 +949,6 @@ ApplicationWindow {
                 color: "white"
                 font.family: notoFont.name
                 font.pixelSize: Screen.height / 24
-                renderType: Text.NativeRendering
                 horizontalAlignment: Text.AlignHCenter
                 anchors.bottom: parent.top
                 opacity: 1
@@ -934,10 +957,10 @@ ApplicationWindow {
                 background: Rectangle {
                     id: subsBackground
                     color: Qt.rgba(0, 0, 0, 0.6)
-                    width: t_metrics.tightBoundingRect.width + 8
+                    width: subTextMetrics.tightBoundingRect.width + 8
                     anchors.left: parent.left
                     anchors.leftMargin: (nativeSubtitles.width
-                                         - t_metrics.tightBoundingRect.width) / 2
+                                         - subTextMetrics.tightBoundingRect.width) / 2
                     anchors.right: parent.right
                     anchors.rightMargin: anchors.leftMargin
                 }
