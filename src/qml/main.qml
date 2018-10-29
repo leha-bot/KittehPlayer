@@ -85,6 +85,20 @@ ApplicationWindow {
         width: parent.width
         height: parent.height
 
+        Settings {
+            id: appearance
+            category: "Appearance"
+            property bool titleOnlyOnFullscreen: true
+            property bool clickToPause: true
+            property bool useMpvSubs: false
+        }
+
+        Settings {
+            id: fun
+            category: "Fun"
+            property bool nyanCat: false
+        }
+
         Timer {
             id: initTimer
             interval: 1000
@@ -102,6 +116,21 @@ ApplicationWindow {
             var args = Qt.application.arguments
             var len = Qt.application.arguments.length
             var argNo = 0
+
+            if (!appearance.useMpvSubs) {
+                player.setOption("sub-font", "Noto Sans")
+                player.setOption("sub-font-size", "24")
+                player.setOption("sub-ass-override", "force")
+                player.setOption("sub-ass", "off")
+                player.setOption("sub-border-size", "0")
+                player.setOption("sub-bold", "off")
+                player.setOption("sub-scale-by-window", "on")
+                player.setOption("sub-scale-with-window", "on")
+                player.setOption("sub-color", "0.0/0.0/0.0/0.0")
+                player.setOption("sub-border-color", "0.0/0.0/0.0/0.0")
+                player.setOption("sub-back-color", "0.0/0.0/0.0/0.0")
+            }
+
             player.setOption("ytdl-format", "bestvideo[width<=" + Screen.width
                              + "][height<=" + Screen.height + "]+bestaudio")
             if (len > 1) {
@@ -211,13 +240,12 @@ ApplicationWindow {
             return subtitlesMenu.visible || settingsMenu.visible
                     || fileMenuBarItem.opened || playbackMenuBarItem.opened
                     || viewMenuBarItem.opened || audioMenuBarItem.opened
-                    || screenshotSaveDialog.visible || videoMenuBarItem.opened
-                    || subsMenuBarItem.opened || aboutMenuBarItem.opened
+                    || videoMenuBarItem.opened || subsMenuBarItem.opened
+                    || aboutMenuBarItem.opened
         }
 
         function hideControls(force) {
             if (!isAnyMenuOpen() || force) {
-                //player.setOption("sub-margin-y", "22")
                 controlsBar.visible = false
                 controlsBackground.visible = false
                 titleBar.visible = false
@@ -228,7 +256,6 @@ ApplicationWindow {
 
         function showControls() {
             if (!controlsBar.visible) {
-                //player.setOption("sub-margin-y", String(controlsBar.height + progressBar.height))
                 controlsBar.visible = true
                 controlsBackground.visible = true
                 if (appearance.titleOnlyOnFullscreen) {
@@ -243,19 +270,6 @@ ApplicationWindow {
             }
         }
 
-        Settings {
-            id: appearance
-            category: "Appearance"
-            property bool titleOnlyOnFullscreen: true
-            property bool clickToPause: true
-        }
-
-        Settings {
-            id: fun
-            category: "Fun"
-            property bool nyanCat: false
-        }
-
         FileSaveDialog {
             id: screenshotSaveDialog
             title: "Save Screenshot To"
@@ -267,7 +281,7 @@ ApplicationWindow {
                                 "file://", '')
                     console.log("Saving screenshot to: " + filepath)
                     result.saveToFile(filepath)
-                    nativeSubs.visible = true
+                    subtitlesBar.visible = appearance.useMpvSubs ? false : true
                 })
             }
         }
@@ -315,6 +329,8 @@ ApplicationWindow {
 
         MouseArea {
             id: mouseAreaPlayer
+            z: 1000
+            focus: true
             width: parent.width
             anchors.bottom: mouseAreaBar.top
             anchors.bottomMargin: 10
@@ -334,8 +350,8 @@ ApplicationWindow {
             Timer {
                 id: mouseAreaPlayerTimer
                 interval: 1000
-                running: false
-                repeat: false
+                running: true
+                repeat: true
                 onTriggered: {
                     player.hideControls()
                 }
@@ -456,7 +472,7 @@ ApplicationWindow {
                     text: "Screenshot w/o subtitles"
                     onTriggered: {
                         player.hideControls(true)
-                        nativeSubs.visible = false
+                        subtitlesBar.visible = false
                         screenshotSaveDialog.open()
                     }
                     shortcut: keybinds.screenshotWithoutSubtitles
@@ -656,6 +672,13 @@ ApplicationWindow {
                     text: "Cycle Subs Backwards"
                     onTriggered: {
                         player.command(["cycle", "sub", "down"])
+                    }
+                    shortcut: keybinds.cycleSubBackwards
+                }
+                Action {
+                    text: "Toggle MPV Subs"
+                    onTriggered: {
+                        appearance.useMpvSubs = !appearance.useMpvSubs
                     }
                     shortcut: keybinds.cycleSubBackwards
                 }
@@ -925,44 +948,57 @@ ApplicationWindow {
         }
 
         Rectangle {
-            id: nativeSubtitles
-            height: nativeSubs.font.pixelSize + 4
-            visible: nativeSubs.text == "" ? false : true
-            anchors.left: controlsBar.left
-            anchors.right: controlsBar.right
-            anchors.bottom: controlsBackground.top
-            anchors.bottomMargin: 0
-
-            radius: 5
+            id: subtitlesBar
+            visible: !appearance.useMpvSubs
             color: "transparent"
-            TextMetrics {
-                id: subTextMetrics
-                font.family: notoFont.name
-                font.pixelSize: nativeSubs.fontInfo.pixelSize
-                text: nativeSubs.text
-            }
+            height: player.height / 8
+            anchors.bottom: controlsBackground.top
+            anchors.bottomMargin: 5
+            anchors.right: parent.right
+            anchors.left: parent.left
 
-            Label {
-                id: nativeSubs
-                width: parent.width
-                text: ""
-                color: "white"
-                font.family: notoFont.name
-                font.pixelSize: Screen.height / 24
-                horizontalAlignment: Text.AlignHCenter
-                anchors.bottom: parent.top
-                opacity: 1
-                wrapMode: Text.WrapAtWordBoundaryOrAnywhere
+            RowLayout {
+                id: nativeSubtitles
+                visible: true
+                anchors.left: subtitlesBar.left
+                anchors.right: subtitlesBar.right
+                height: childrenRect.height
+                anchors.bottom: parent.bottom
+                anchors.bottomMargin: 10
 
-                background: Rectangle {
-                    id: subsBackground
-                    color: Qt.rgba(0, 0, 0, 0.6)
-                    width: subTextMetrics.tightBoundingRect.width + 8
-                    anchors.left: parent.left
-                    anchors.leftMargin: (nativeSubtitles.width
-                                         - subTextMetrics.tightBoundingRect.width) / 2
-                    anchors.right: parent.right
-                    anchors.rightMargin: anchors.leftMargin
+                Rectangle {
+                    id: subsContainer
+                    Layout.fillWidth: true
+                    Layout.fillHeight: true
+                    Layout.rightMargin: 0
+                    Layout.leftMargin: 0
+                    Layout.maximumWidth: nativeSubtitles.width
+                    color: "transparent"
+                    height: childrenRect.height
+
+                    Label {
+                        id: nativeSubs
+                        onWidthChanged: {
+
+                            if (width > parent.width - 10)
+                                width = parent.width - 10
+                        }
+                        onTextChanged: if (width <= parent.width - 10)
+                                           width = undefined
+                        color: "white"
+                        anchors.horizontalCenter: parent.horizontalCenter
+                        wrapMode: Text.WrapAtWordBoundaryOrAnywhere
+                        font.pixelSize: Screen.height / 24
+                        font.family: notoFont.name
+                        horizontalAlignment: Text.AlignHCenter
+                        opacity: 1
+                        background: Rectangle {
+                            id: subsBackground
+                            color: Qt.rgba(0, 0, 0, 0.6)
+                            width: subsContainer.childrenRect.width
+                            height: subsContainer.childrenRect.height
+                        }
+                    }
                 }
             }
         }
