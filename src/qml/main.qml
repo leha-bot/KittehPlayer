@@ -247,6 +247,7 @@ ApplicationWindow {
             id: appearance
             category: "Appearance"
             property bool titleOnlyOnFullscreen: true
+            property bool clickToPause: true
         }
 
         Settings {
@@ -326,7 +327,7 @@ ApplicationWindow {
             hoverEnabled: true
             cursorShape: controlsBar.visible ? Qt.ArrowCursor : Qt.BlankCursor
             onClicked: {
-                player.command(["cycle", "pause"])
+                if (clickToPause) { player.command(["cycle", "pause"]) }
             }
             Timer {
                 id: mouseAreaPlayerTimer
@@ -923,7 +924,7 @@ ApplicationWindow {
                 text: ""
                 color: "white"
                 font.family: notoFont.name
-                font.pixelSize: 24
+                font.pixelSize: Screen.height / 24
                 renderType: Text.NativeRendering
                 horizontalAlignment: Text.AlignHCenter
                 anchors.bottom: parent.top
