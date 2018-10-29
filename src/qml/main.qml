@@ -1,4 +1,4 @@
- import QtQuick 2.11
+import QtQuick 2.11
 import QtQuick.Controls 2.4
 import QtQuick.Dialogs 1.3
 import QtQuick.Layouts 1.11
@@ -144,11 +144,12 @@ ApplicationWindow {
 
         function setProgressBarEnd(val) {
             progressBar.to = val
-     }
+        }
 
         function setProgressBarValue(val) {
             timeLabel.text = createTimestamp(val) + " / " + createTimestamp(
-                        progressBar.to) + " (" + parseFloat(player.getProperty("speed").toFixed(2)) + "x)"
+                        progressBar.to) + " (" + parseFloat(
+                        player.getProperty("speed").toFixed(2)) + "x)"
             progressBar.value = val
         }
 
@@ -693,7 +694,7 @@ ApplicationWindow {
                 Action {
                     text: "Toggle Nyan Cat"
                     onTriggered: {
-                        fun.nyanCat = ! fun.nyanCat
+                        fun.nyanCat = !fun.nyanCat
                     }
                     shortcut: keybinds.nyanCat
                 }
@@ -886,8 +887,9 @@ ApplicationWindow {
 
         Rectangle {
             id: controlsBackground
-            height: controlsBar.visible ? controlsBar.height + progressBackground.height + (progressBar.topPadding * 2)
-                                          - (progressBackground.height * 2): 0
+            height: controlsBar.visible ? controlsBar.height + progressBackground.height
+                                          + (progressBar.topPadding * 2)
+                                          - (progressBackground.height * 2) : 0
             anchors.bottom: parent.bottom
             anchors.left: parent.left
             anchors.right: parent.right
@@ -905,7 +907,7 @@ ApplicationWindow {
             anchors.right: controlsBar.right
             anchors.bottom: controlsBackground.top
             anchors.bottomMargin: 0
-    
+
             radius: 5
             color: "transparent"
             TextMetrics {
@@ -942,7 +944,7 @@ ApplicationWindow {
         }
 
         function setCachedDuration(val) {
-            cachedLength.width = ((progressBar.width / progressBar.to) * val) - progressLength.width 
+            cachedLength.width = ((progressBar.width / progressBar.to) * val) - progressLength.width
         }
 
         Rectangle {
@@ -987,7 +989,7 @@ ApplicationWindow {
                         onClicked: loadDialog.open()
                     }
                 }
-            }   
+            }
 
             Slider {
                 id: progressBar
@@ -1019,47 +1021,21 @@ ApplicationWindow {
                         height: parent.height
                         color: "red"
                         opacity: 1
-                        LinearGradient {
-                            height: parent.height
+                        Image {
                             visible: fun.nyanCat
+                            id: rainbow
                             anchors.fill: parent
-                            gradient: Gradient {
-                                GradientStop {
-                                    position: 0.0
-                                    color: "#f00"
-                                }
-                                GradientStop {
-                                    position: 0.17
-                                    color: "#f90"
-                                }
-                                GradientStop {
-                                    position: 0.33
-                                    color: "#ff0"
-                                }
-                                GradientStop {
-                                    position: 0.50
-                                    color: "#3f0"
-                                }
-                                GradientStop {
-                                    position: 0.67
-                                    color: "#09f"
-                                }
-                                GradientStop {
-                                    position: 0.83
-                                    color: "#63f"
-                                }
-                                GradientStop {
-                                    position: 1
-                                    color: "#63f"
-                                }
-                            }
+                            height: parent.height
+                            width: parent.width
+                            source: "qrc:/player/icons/rainbow.png"
+                            fillMode: Image.TileHorizontally
                         }
                     }
                     Rectangle {
                         id: cachedLength
                         z: 10
                         anchors.left: progressLength.right
-                        anchors.leftMargin: progressBar.handle.width -2
+                        anchors.leftMargin: progressBar.handle.width - 2
                         //anchors.left: progressBar.handle.horizontalCenter
                         anchors.bottom: progressBar.background.bottom
                         anchors.top: progressBar.background.top
