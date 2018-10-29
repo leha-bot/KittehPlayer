@@ -724,7 +724,7 @@ ApplicationWindow {
                 }
 
                 Action {
-                    text: "Fullscreen"
+                    text: "About Qt"
                     onTriggered: {
                         player.launchAboutQt()
                     }
