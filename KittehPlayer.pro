@@ -4,9 +4,7 @@ TEMPLATE = app
 QT += qml quickcontrols2 widgets core-private gui-private
 SOURCES += src/main.cpp src/mpvobject.cpp src/filesavedialog.cpp src/fileopendialog.cpp
 
-CONFIG += debug
-CONFIG+=qml_debug
-
+CONFIG += release
 #CONFIG+=qtquickcompiler
 QT_CONFIG -= no-pkg-config
 CONFIG += link_pkgconfig
