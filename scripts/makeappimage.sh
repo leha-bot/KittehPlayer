@@ -7,13 +7,11 @@ export PATH="/usr/lib/ccache:/usr/lib/ccache/bin:$PATH"
 export QML_SOURCES_PATHS=src/qml
 export V=0 VERBOSE=0
 
-qmake CONFIG+=release PREFIX=/usr
+cmake -DCMAKE_BUILD_TYPE=Release -DCMAKE_INSTALL_PREFIX=/usr .
 make -j$(nproc)
-make INSTALL_ROOT=appdir -j$(nproc) install ; find appdir/
-#wget "https://github.com/probonopd/linuxdeployqt/releases/download/continuous/linuxdeployqt-continuous-x86_64.AppImage"
+make DESTDIR=appdir -j$(nproc) install ; find appdir/
 wget -nc "https://github.com/linuxdeploy/linuxdeploy/releases/download/continuous/linuxdeploy-x86_64.AppImage"
 wget -nc "https://github.com/linuxdeploy/linuxdeploy-plugin-qt/releases/download/continuous/linuxdeploy-plugin-qt-x86_64.AppImage"
-#wget -nc "https://raw.githubusercontent.com/TheAssassin/linuxdeploy-plugin-conda/master/linuxdeploy-plugin-conda.sh"
 chmod +x linux*
 mkdir -p appdir/usr/lib
 
