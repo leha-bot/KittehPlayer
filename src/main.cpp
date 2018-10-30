@@ -14,7 +14,7 @@
 
 int main( int argc, char *argv[] )
 {
-#ifdef __linux__
+#ifndef  __MINGW32__
     setenv("QT_QPA_PLATFORMTHEME", "gtk3", 0);
     setenv("QT_QUICK_CONTROLS_STYLE","Desktop",1);
 #endif
@@ -38,7 +38,7 @@ int main( int argc, char *argv[] )
     QProcess dpms;
     dpms.start("xset", QStringList() << "-dpms");
 
-#ifdef __linux__
+#ifndef __MINGW32__
     QString newpath = QProcessEnvironment::systemEnvironment().value("APPDIR", "") + "/usr/bin:" + QProcessEnvironment::systemEnvironment().value("PATH", "");
     qDebug() << newpath;
     setenv("PATH", newpath.toUtf8().constData(), 1);
