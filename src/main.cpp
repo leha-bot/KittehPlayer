@@ -2,6 +2,9 @@
 #include "runtimeqml/runtimeqml.h"
 #endif
 
+#include <cstdlib>
+
+
 #include <QApplication>
 #include <QQmlApplicationEngine>
 #include <QProcessEnvironment>
