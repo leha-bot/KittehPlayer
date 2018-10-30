@@ -1,30 +1,13 @@
-#include <stdexcept>
-#include <clocale>
-#include <bits/stdc++.h> 
-#include <stdio.h>
-#include <stdlib.h>
-
-#include "config.h"
-#include "mpvobject.h"
 #ifdef QRC_SOURCE_PATH
 #include "runtimeqml/runtimeqml.h"
 #endif
 
+#include <QApplication>
+#include <QQmlApplicationEngine>
+#include <QProcessEnvironment>
 #include "fileopendialog.h"
 #include "filesavedialog.h"
-
-#include <QApplication>
-
-#include <QGuiApplication>
-#include <QMainWindow>
-
-#include <QQmlApplicationEngine>
-#include <QObject>
-#include <QWidget>
-#include <QtGui/QOpenGLFramebufferObject>
-#include <QQuickView>
-#include <QProcessEnvironment>
-
+#include "mpvobject.h"
 
 int main( int argc, char *argv[] )
 {

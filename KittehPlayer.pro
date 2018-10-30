@@ -29,7 +29,7 @@ unix {
 
 INSTALLS += target
 
-HEADERS += src/mpvobject.h src/config.h src/filesavedialog.h src/fileopendialog.h
+HEADERS += src/mpvobject.h src/filesavedialog.h src/fileopendialog.h
 
 
 DISTFILES += KittehPlayer.desktop KittehPlayer.png README.md LICENSE.txt

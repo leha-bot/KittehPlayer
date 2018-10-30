@@ -1,23 +1,14 @@
 #ifndef MPVOBJECT_H
 #define MPVOBJECT_H
 
-#include <QQuickFramebufferObject>
-
 #include <mpv/client.h>
-
 #include <mpv/render_gl.h>
-
 #include <mpv/qthelper.hpp>
 
 #include <QObject>
-#include <QtGlobal>
 #include <QOpenGLContext>
-#include <QGuiApplication>
-
 #include <QQuickFramebufferObject>
 
-#include <QtQuick/QQuickWindow>
-#include <QtQuick/QQuickView>
 
 
 class MpvRenderer;

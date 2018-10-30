@@ -3,26 +3,12 @@
 #include <clocale>
 
 #include "mpvobject.h"
-#include "config.h"
 
-
-#include <QObject>
-#include <QtGlobal>
-#include <QtCore>
 #include <QApplication>
-
+#include <QQuickWindow>
 #include <QOpenGLContext>
+#include <QOpenGLFramebufferObject>
 
-#include <QGuiApplication>
-#include <QtQuick/QQuickWindow>
-#include <QtQuick/QQuickView>
-#include <QQuickFramebufferObject>
-#include <QOpenGLContext>
-#include <QtQuick/QQuickWindow>
-#include <QtQuick/QQuickView>
-#include <QtGui/QOpenGLFramebufferObject>
-
-#include <QJsonDocument>
 
 namespace
 {
