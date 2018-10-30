@@ -14,8 +14,10 @@
 
 int main( int argc, char *argv[] )
 {
+#ifdef UNIX
     setenv("QT_QPA_PLATFORMTHEME", "gtk3", 0);
     setenv("QT_QUICK_CONTROLS_STYLE","Desktop",1);
+#endif
     QApplication app(argc, argv);
     app.setOrganizationName("KittehPlayer");
     app.setOrganizationDomain("namedkitten.pw");
@@ -36,11 +38,11 @@ int main( int argc, char *argv[] )
     QProcess dpms;
     dpms.start("xset", QStringList() << "-dpms");
 
-
+#ifdef UNIX
     QString newpath = QProcessEnvironment::systemEnvironment().value("APPDIR", "") + "/usr/bin:" + QProcessEnvironment::systemEnvironment().value("PATH", "");
-    
     qDebug() << newpath;
-    setenv("Path", newpath.toUtf8().constData(), 1);
+    setenv("PATH", newpath.toUtf8().constData(), 1);
+#endif	
     QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
     QApplication::setAttribute(Qt::AA_UseSoftwareOpenGL	);
     qmlRegisterType<MpvObject>("player", 1, 0, "MpvObject");
