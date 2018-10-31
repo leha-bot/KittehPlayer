@@ -27,6 +27,10 @@ unix {
     INSTALLS += icon
 }
 
+win32 {
+DEFINES += WINDOWS
+}
+
 INSTALLS += target
 
 HEADERS += src/mpvobject.h src/filesavedialog.h src/fileopendialog.h

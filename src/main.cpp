@@ -12,10 +12,9 @@
 #include "filesavedialog.h"
 #include "mpvobject.h"
 
-#if defined(MINGW) || defined(__MINGW32__) || defined(__MINGW64__)
+#ifdef WIN32
 #include "setenv_mingw.hpp"
 #endif
-
 
 int main( int argc, char *argv[] )
 {
@@ -25,7 +24,6 @@ int main( int argc, char *argv[] )
     app.setOrganizationName("KittehPlayer");
     app.setOrganizationDomain("namedkitten.pw");
     app.setApplicationName("KittehPlayer");
-
     for (int i = 1; i < argc; ++i) {
         if (!qstrcmp(argv[i], "--update")) {
             QString program = QProcessEnvironment::systemEnvironment().value("APPDIR", "") +  "/usr/bin/appimageupdatetool";
@@ -44,8 +42,8 @@ int main( int argc, char *argv[] )
     QString newpath = QProcessEnvironment::systemEnvironment().value("APPDIR", "") + "/usr/bin:" + QProcessEnvironment::systemEnvironment().value("PATH", "");
     qDebug() << newpath;
     setenv("PATH", newpath.toUtf8().constData(), 1);
+
     QApplication::setAttribute(Qt::AA_EnableHighDpiScaling);
-    QApplication::setAttribute(Qt::AA_UseSoftwareOpenGL	);
     qmlRegisterType<MpvObject>("player", 1, 0, "MpvObject");
     qmlRegisterType<FileOpenDialog>("player", 1, 0, "FileOpenDialog");
     qmlRegisterType<FileSaveDialog>("player", 1, 0, "FileSaveDialog");

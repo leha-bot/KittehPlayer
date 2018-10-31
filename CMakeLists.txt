@@ -34,6 +34,10 @@ add_definitions(-DQRC_SOURCE_PATH="${PROJECT_SOURCE_DIR}/src/qml")
 add_definitions(-DQT_QML_DEBUG)
 endif(DEVELOP)
 
+if(WIN32)
+add_definitions(-DWINDOWS)
+endif(WIN32)
+
 add_executable(KittehPlayer ${SOURCES} ${qml_QRC})
 
 # Use the Qml/Quick modules from Qt 5.
