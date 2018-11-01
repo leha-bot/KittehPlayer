@@ -402,7 +402,7 @@ ApplicationWindow {
         MenuBar {
             id: menuBar
             //width: parent.width
-            height: Math.Max(24, Screen.height / 32)
+            height: Math.max(24, Screen.height / 32)
             delegate: MenuBarItem {
                 id: menuBarItem
 
