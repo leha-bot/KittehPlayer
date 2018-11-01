@@ -14,9 +14,8 @@ ApplicationWindow {
     visible: true
     width: 720
     height: 480
-    FontLoader {
-        id: notoFont
-        source: "fonts/NotoSans.ttf"
+    Translator {
+        id: translate
     }
 
     property int lastScreenVisibility
@@ -90,6 +89,12 @@ ApplicationWindow {
             property bool titleOnlyOnFullscreen: true
             property bool clickToPause: true
             property bool useMpvSubs: false
+            property string fontName: "Noto Sans"
+        }
+        Settings {
+            id: i18n
+            category: "I18N"
+            property string language: "english"
         }
 
         Settings {
@@ -271,14 +276,13 @@ ApplicationWindow {
 
         FileSaveDialog {
             id: screenshotSaveDialog
-            title: "Save Screenshot To"
+            title: translate.getTranslation("SAVE_SCREENSHOT", i18n.language)
             filename: "screenshot.png"
             nameFilters: ["Images (*.png)", "All files (*)"]
             onAccepted: {
                 player.grabToImage(function (result) {
                     var filepath = String(screenshotSaveDialog.fileUrl).replace(
                                 "file://", '')
-                    console.log("Saving screenshot to: " + filepath)
                     result.saveToFile(filepath)
                     subtitlesBar.visible = appearance.useMpvSubs ? false : true
                 })
@@ -287,7 +291,7 @@ ApplicationWindow {
 
         FileOpenDialog {
             id: fileDialog
-            title: "Please choose a file"
+            title: translate.getTranslation("OPEN_FILE", i18n.language)
             nameFilters: ["All files (*)"]
             onAccepted: {
                 player.command(["loadfile", String(fileDialog.fileUrl)])
@@ -300,7 +304,7 @@ ApplicationWindow {
 
         Dialog {
             id: loadDialog
-            title: "URL / File Path"
+            title: translate.getTranslation("URL_FILE_PATH", i18n.language)
             standardButtons: StandardButton.Cancel | StandardButton.Open
             onAccepted: {
                 player.command(["loadfile", pathText.text])
@@ -308,7 +312,8 @@ ApplicationWindow {
             }
             TextField {
                 id: pathText
-                placeholderText: qsTr("URL / File Path")
+                placeholderText: translate.getTranslation("URL_FILE_PATH",
+                                                          i18n.language)
             }
         }
 
@@ -350,7 +355,7 @@ ApplicationWindow {
                 id: mouseAreaPlayerTimer
                 interval: 1000
                 running: true
-                repeat: true
+                repeat: false
                 onTriggered: {
                     player.hideControls()
                 }
@@ -394,11 +399,10 @@ ApplicationWindow {
             property string decreaseVolume: "/"
             property string mute: "m"
         }
-
         MenuBar {
             id: menuBar
             //width: parent.width
-            height: Screen.height / 32
+            height: Math.Max(24, Screen.height / 32)
             delegate: MenuBarItem {
                 id: menuBarItem
 
@@ -411,7 +415,7 @@ ApplicationWindow {
                 contentItem: Text {
                     id: menuBarItemText
                     text: menuBarItem.text
-                    font.family: notoFont.name
+                    font.family: appearance.fontName
                     font.pixelSize: 14
                     font.bold: menuBarItem.highlighted
                     opacity: 1
@@ -419,6 +423,7 @@ ApplicationWindow {
                     horizontalAlignment: Text.AlignLeft
                     verticalAlignment: Text.AlignVCenter
                     elide: Text.ElideRight
+                    renderType: Text.NativeRendering
                 }
 
                 background: Rectangle {
@@ -438,8 +443,9 @@ ApplicationWindow {
 
             Menu {
                 id: fileMenuBarItem
-                title: "File"
-                width: 150
+                title: translate.getTranslation("FILE_MENU", i18n.language)
+                font.family: appearance.fontName
+                width: 300
                 background: Rectangle {
                     implicitWidth: parent.width
                     implicitHeight: 10
@@ -450,17 +456,17 @@ ApplicationWindow {
                 }
 
                 Action {
-                    text: "Open File"
+                    text: translate.getTranslation("FILE_MENU", i18n.language)
                     onTriggered: fileDialog.open()
                     shortcut: keybinds.openFile
                 }
                 Action {
-                    text: "Open URI/URL"
+                    text: translate.getTranslation("OPEN_URL", i18n.language)
                     onTriggered: loadDialog.open()
                     shortcut: keybinds.openURI
                 }
                 Action {
-                    text: "Screenshot"
+                    text: translate.getTranslation("SCREENSHOT", i18n.language)
                     onTriggered: {
                         player.hideControls(true)
                         screenshotSaveDialog.open()
@@ -468,7 +474,8 @@ ApplicationWindow {
                     shortcut: keybinds.screenshot
                 }
                 Action {
-                    text: "Screenshot w/o subtitles"
+                    text: translate.getTranslation(
+                              "SCREENSHOT_WITHOUT_SUBTITLES", i18n.language)
                     onTriggered: {
                         player.hideControls(true)
                         subtitlesBar.visible = false
@@ -477,14 +484,15 @@ ApplicationWindow {
                     shortcut: keybinds.screenshotWithoutSubtitles
                 }
                 Action {
-                    text: "Full Screenshot"
+                    text: translate.getTranslation("FULL_SCREENSHOT",
+                                                   i18n.language)
                     onTriggered: {
                         screenshotSaveDialog.open()
                     }
                     shortcut: keybinds.fullScreenshot
                 }
                 Action {
-                    text: "Exit"
+                    text: translate.getTranslation("EXIT", i18n.language)
                     onTriggered: Qt.quit()
                     shortcut: keybinds.quit
                 }
@@ -492,8 +500,8 @@ ApplicationWindow {
 
             Menu {
                 id: playbackMenuBarItem
-                title: "Playback"
-                width: 150
+                title: translate.getTranslation("PLAYBACK", i18n.language)
+                width: 300
                 background: Rectangle {
                     implicitWidth: parent.width
                     implicitHeight: 10
@@ -505,77 +513,82 @@ ApplicationWindow {
                 }
 
                 Action {
-                    text: "Play/Pause"
+                    text: translate.getTranslation("PLAY_PAUSE", i18n.language)
                     onTriggered: {
                         player.command(["cycle", "pause"])
                     }
                     shortcut: String(keybinds.playPause)
                 }
                 Action {
-                    text: "Rewind 10s"
+                    text: translate.getTranslation("REWIND_10S", i18n.language)
                     onTriggered: {
                         player.command(["seek", "-10"])
                     }
                     shortcut: keybinds.rewind10
                 }
                 Action {
-                    text: "Forward 10s"
+                    text: translate.getTranslation("FORWARD_10S", i18n.language)
                     onTriggered: {
                         player.command(["seek", "10"])
                     }
                     shortcut: keybinds.forward10
                 }
                 Action {
-                    text: "Rewind 5s"
+                    text: translate.getTranslation("FORWARD_5S", i18n.language)
                     onTriggered: {
                         player.command(["seek", "-5"])
                     }
                     shortcut: keybinds.rewind5
                 }
                 Action {
-                    text: "Forward 5s"
+                    text: translate.getTranslation("FORWARD_5S", i18n.language)
                     onTriggered: {
                         player.command(["seek", "5"])
                     }
                     shortcut: keybinds.forward5
                 }
                 Action {
-                    text: "Speed -10%"
+                    text: translate.getTranslation("SPEED_DECREASE_10PERCENT",
+                                                   i18n.language)
                     onTriggered: {
                         player.command(["multiply", "speed", "1/1.1"])
                     }
                     shortcut: keybinds.decreaseSpeedBy10Percent
                 }
                 Action {
-                    text: "Speed +10%"
+                    text: translate.getTranslation("SPEED_INCREASE_10PERCENT",
+                                                   i18n.language)
                     onTriggered: {
                         player.command(["multiply", "speed", "1.1"])
                     }
                     shortcut: keybinds.increaseSpeedBy10Percent
                 }
                 Action {
-                    text: "Halve Speed"
+                    text: translate.getTranslation("HALVE_SPEED", i18n.language)
                     onTriggered: {
                         player.command(["multiply", "speed", "0.5"])
                     }
                     shortcut: keybinds.halveSpeed
                 }
                 Action {
-                    text: "Double Speed"
+                    text: translate.getTranslation("DOUBLE_SPEED",
+                                                   i18n.language)
                     onTriggered: {
                         player.command(["multiply", "speed", "2.0"])
                     }
                     shortcut: keybinds.doubleSpeed
                 }
                 Action {
-                    text: "Forward Frame"
+                    text: translate.getTranslation("FORWARD_FRAME",
+                                                   i18n.language)
                     onTriggered: {
                         player.command(["frame-step"])
                     }
                     shortcut: keybinds.forwardFrame
                 }
                 Action {
-                    text: "Back Frame"
+                    text: translate.getTranslation("BACKWARD_FRAME",
+                                                   i18n.language)
                     onTriggered: {
                         player.command(["frame-back-step"])
                     }
@@ -585,8 +598,8 @@ ApplicationWindow {
 
             Menu {
                 id: audioMenuBarItem
-                title: "Audio"
-                width: 140
+                title: translate.getTranslation("AUDIO", i18n.language)
+                width: 300
                 background: Rectangle {
                     implicitWidth: parent.width
                     implicitHeight: 10
@@ -597,28 +610,31 @@ ApplicationWindow {
                     width: parent.width
                 }
                 Action {
-                    text: "Cycle Audio"
+                    text: translate.getTranslation("CYCLE_AUDIO_TRACK",
+                                                   i18n.language)
                     onTriggered: {
                         player.command(["cycle", "audio"])
                     }
                     shortcut: keybinds.cycleAudio
                 }
                 Action {
-                    text: "Increase Volume"
+                    text: translate.getTranslation("INCREASE_VOLUME",
+                                                   i18n.language)
                     onTriggered: {
                         player.command(["add", "volume", "2"])
                     }
                     shortcut: keybinds.increaseVolume
                 }
                 Action {
-                    text: "Decrease Volume"
+                    text: translate.getTranslation("DECREASE_VOLUME",
+                                                   i18n.language)
                     onTriggered: {
                         player.command(["add", "volume", "-2"])
                     }
                     shortcut: keybinds.decreaseVolume
                 }
                 Action {
-                    text: "Mute"
+                    text: translate.getTranslation("MUTE_VOLUME", i18n.language)
                     onTriggered: {
                         player.command(["cycle", "mute"])
                     }
@@ -628,8 +644,8 @@ ApplicationWindow {
 
             Menu {
                 id: videoMenuBarItem
-                title: "Video"
-                width: 140
+                title: translate.getTranslation("VIDEO", i18n.language)
+                width: 300
                 background: Rectangle {
                     implicitWidth: parent.width
                     implicitHeight: 10
@@ -640,7 +656,7 @@ ApplicationWindow {
                     width: parent.width
                 }
                 Action {
-                    text: "Cycle Video"
+                    text: translate.getTranslation("CYCLE_VIDEO", i18n.language)
                     onTriggered: {
                         player.command(["cycle", "video"])
                     }
@@ -649,8 +665,8 @@ ApplicationWindow {
             }
             Menu {
                 id: subsMenuBarItem
-                title: "Subtitles"
-                width: 140
+                title: translate.getTranslation("SUBTITLES", i18n.language)
+                width: 300
                 background: Rectangle {
                     implicitWidth: parent.width
                     implicitHeight: 10
@@ -661,21 +677,24 @@ ApplicationWindow {
                     width: parent.width
                 }
                 Action {
-                    text: "Cycle Subs"
+                    text: translate.getTranslation("CYCLE_SUB_TRACK",
+                                                   i18n.language)
                     onTriggered: {
                         player.command(["cycle", "sub"])
                     }
                     shortcut: keybinds.cycleSub
                 }
                 Action {
-                    text: "Cycle Subs Backwards"
+                    text: translate.getTranslation("CYCLE_SUB_TRACK_BACKWARDS",
+                                                   i18n.language)
                     onTriggered: {
                         player.command(["cycle", "sub", "down"])
                     }
                     shortcut: keybinds.cycleSubBackwards
                 }
                 Action {
-                    text: "Toggle MPV Subs"
+                    text: translate.getTranslation("TOGGLE_MPV_SUBS",
+                                                   i18n.language)
                     onTriggered: {
                         appearance.useMpvSubs = !appearance.useMpvSubs
                     }
@@ -685,8 +704,8 @@ ApplicationWindow {
 
             Menu {
                 id: viewMenuBarItem
-                title: "View"
-                width: 120
+                title: translate.getTranslation("VIEW", i18n.language)
+                width: 300
                 background: Rectangle {
                     implicitWidth: parent.width
                     implicitHeight: 10
@@ -698,14 +717,14 @@ ApplicationWindow {
                 }
 
                 Action {
-                    text: "Fullscreen"
+                    text: translate.getTranslation("FULLSCREEN", i18n.language)
                     onTriggered: {
                         toggleFullscreen()
                     }
                     shortcut: keybinds.fullscreen
                 }
                 Action {
-                    text: "Track Menu"
+                    text: translate.getTranslation("TRACK_MENU", i18n.language)
                     onTriggered: {
                         tracksMenuUpdate()
                         subtitlesMenu.visible = !subtitlesMenu.visible
@@ -715,7 +734,7 @@ ApplicationWindow {
                 }
 
                 Action {
-                    text: "Stats For Nerds"
+                    text: translate.getTranslation("STATS", i18n.language)
                     onTriggered: {
                         player.command(
                                     ["script-binding", "stats/display-stats-toggle"])
@@ -724,7 +743,8 @@ ApplicationWindow {
                 }
 
                 Action {
-                    text: "Toggle Nyan Cat"
+                    text: translate.getTranslation("TOGGLE_NYAN_CAT",
+                                                   i18n.language)
                     onTriggered: {
                         fun.nyanCat = !fun.nyanCat
                     }
@@ -733,8 +753,8 @@ ApplicationWindow {
             }
             Menu {
                 id: aboutMenuBarItem
-                title: "About"
-                width: 120
+                title: translate.getTranslation("ABOUT", i18n.language)
+                width: 300
                 background: Rectangle {
                     implicitWidth: parent.width
                     implicitHeight: 10
@@ -746,7 +766,7 @@ ApplicationWindow {
                 }
 
                 Action {
-                    text: "About Qt"
+                    text: translate.getTranslation("ABOUT_QT", i18n.language)
                     onTriggered: {
                         player.launchAboutQt()
                     }
@@ -819,9 +839,9 @@ ApplicationWindow {
                 id: audioLabel
                 anchors.left: parent.left
                 anchors.right: parent.right
-                text: "Audio"
+                text: translate.getTranslation("AUDIO", i18n.language)
                 color: "white"
-                font.family: notoFont.name
+                font.family: appearance.fontName
                 font.pixelSize: 14
                 horizontalAlignment: Text.AlignHCenter
                 opacity: 1
@@ -843,9 +863,9 @@ ApplicationWindow {
                 id: subLabel
                 anchors.left: parent.left
                 anchors.right: parent.right
-                text: "Subtitles"
+                text: translate.getTranslation("SUBTITLES", i18n.language)
                 color: "white"
-                font.family: notoFont.name
+                font.family: appearance.fontName
                 font.pixelSize: 14
                 anchors.top: audioList.bottom
                 horizontalAlignment: Text.AlignHCenter
@@ -868,9 +888,9 @@ ApplicationWindow {
                 id: vidLabel
                 anchors.left: parent.left
                 anchors.right: parent.right
-                text: "Video"
+                text: translate.getTranslation("VIDEO", i18n.language)
                 color: "white"
-                font.family: notoFont.name
+                font.family: appearance.fontName
                 font.pixelSize: 14
                 anchors.top: subList.bottom
                 horizontalAlignment: Text.AlignHCenter
@@ -915,7 +935,7 @@ ApplicationWindow {
 
             Text {
                 id: titleLabel
-                text: "Title"
+                text: translate.getTranslation("TITLE", i18n.language)
                 color: "white"
                 width: parent.width
                 height: parent.height
@@ -925,7 +945,7 @@ ApplicationWindow {
                 topPadding: 4
                 bottomPadding: 4
                 anchors.top: parent.top
-                font.family: notoFont.name
+                font.family: appearance.fontName
                 font.pixelSize: 14
                 font.bold: true
                 opacity: 1
@@ -988,7 +1008,7 @@ ApplicationWindow {
                         anchors.horizontalCenter: parent.horizontalCenter
                         wrapMode: Text.WrapAtWordBoundaryOrAnywhere
                         font.pixelSize: Screen.height / 24
-                        font.family: notoFont.name
+                        font.family: appearance.fontName
                         horizontalAlignment: Text.AlignHCenter
                         opacity: 1
                         background: Rectangle {
@@ -1037,17 +1057,6 @@ ApplicationWindow {
                 anchors.right: settingsButton.right
                 anchors.bottom: progressBar.top
                 radius: 5
-
-                ColumnLayout {
-                    Button {
-                        text: "Open File"
-                        onClicked: fileDialog.open()
-                    }
-                    Button {
-                        text: "Enter Path"
-                        onClicked: loadDialog.open()
-                    }
-                }
             }
 
             Slider {
@@ -1069,7 +1078,8 @@ ApplicationWindow {
                     id: progressBackground
                     x: progressBar.leftPadding
                     y: progressBar.topPadding + progressBar.availableHeight / 2 - height / 2
-                    implicitHeight: (Screen.height / 256) < (fun.nyanCat ? 12 : 2) ? (fun.nyanCat ? 12 : 2) : Screen.height / 256
+                    implicitHeight: Math.max(Screen.height / 256,
+                                             fun.nyanCat ? 12 : 2)
                     width: progressBar.availableWidth
                     height: implicitHeight
                     color: Qt.rgba(255, 255, 255, 0.6)
@@ -1252,7 +1262,7 @@ ApplicationWindow {
                 anchors.top: parent.top
                 anchors.bottom: parent.bottom
                 padding: 2
-                font.family: notoFont.name
+                font.family: appearance.fontName
                 font.pixelSize: 14
                 verticalAlignment: Text.AlignVCenter
                 renderType: Text.NativeRendering

@@ -1,10 +1,12 @@
 import QtQuick 2.11
 import QtQuick.Controls 2.4
+import Qt.labs.settings 1.0
 
 MenuItem {
-    FontLoader {
-        id: notoFont
-        source: "fonts/NotoSans.ttf"
+    Settings {
+        id: appearance
+        category: "Appearance"
+        property string fontName: "Noto Sans"
     }
     id: menuItem
     implicitWidth: 100
@@ -13,7 +15,7 @@ MenuItem {
     contentItem: Text {
         rightPadding: menuItem.indicator.width
         text: menuItem.text
-        font.family: notoFont.name
+        font.family: appearance.fontName
         font.bold: menuItem.highlighted
         opacity: 1
         color: menuItem.highlighted ? "#5a50da" : "white"
