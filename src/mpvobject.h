@@ -3,7 +3,7 @@
 
 #include <mpv/client.h>
 #include <mpv/render_gl.h>
-#include <mpv/qthelper.hpp>
+#include "mpv/qthelper.hpp"
 
 #include <QObject>
 #include <QOpenGLContext>
